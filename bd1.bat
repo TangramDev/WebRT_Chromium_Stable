@@ -1,0 +1,1 @@
+ninja.exe -C out\default chrome\ -j %1

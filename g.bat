@@ -1,0 +1,1 @@
+git pull --rebase && gclient sync && ..\bd %1

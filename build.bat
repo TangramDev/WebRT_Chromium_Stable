@@ -1,0 +1,1 @@
+autoninja -C out\default chrome\installer\mini_installer

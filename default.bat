@@ -1,0 +1,1 @@
+gn gen --ide=vs2022 out/Default --args="is_component_build = false is_debug = false blink_symbol_level = 0 v8_symbol_level = 0"

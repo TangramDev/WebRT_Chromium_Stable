@@ -1,0 +1,1 @@
+ninja.exe -C out\default chrome\installer\mini_installer -j %1

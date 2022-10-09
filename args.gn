@@ -1,0 +1,13 @@
+is_tangram_branded = true
+is_official_build = true
+is_debug = false
+is_component_build = false
+enable_nacl = false
+target_cpu = "x64"
+media_use_ffmpeg = true
+media_use_libvpx = true
+proprietary_codecs = true
+ffmpeg_branding = "Chrome"
+google_api_key = "AIzaSyC-reM9HNhgZt7l3_voTCCEmo20japQfFM"
+google_default_client_id = "960065660547-ma7eh36i47rhq8kldjivutt42prjqcgf.apps.googleusercontent.com"
+google_default_client_secret = "pU7eZtVAIcnzpChXKiwHGxwa"
