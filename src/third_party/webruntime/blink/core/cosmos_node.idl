@@ -1,0 +1,63 @@
+
+[Exposed = Window] interface CosmosNode : CosmosXobj {
+  // Message API
+  void sendMessageToXobj(CosmosXobj msg);
+  void sendMessageToNode(CosmosNode node);
+
+  // void ShowWebContent(DOMString strParentDivName, DOMString strDivName);
+  // Control Bind Api:
+  void setControlVal(DOMString CtrlID, long long CtrlHandle, DOMString strVal);
+
+  // Node API
+  CosmosNode getChild(long nIndex);
+  CosmosNode getChild(long row, long col);
+  CosmosNode getChild(DOMString strName);
+  CosmosNode getXobj(DOMString strName);
+  void Observe(
+      DOMString strKey, DOMString xml,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+  void Observe(
+      DOMString strCtrlName, DOMString strKey, DOMString xml,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+  void Observe(
+      long row, long col, DOMString strKey, DOMString xml,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+  void ObserveEx(
+      DOMString strKey, Element elem,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+  void ObserveEx(
+      DOMString strCtrlName, DOMString strKey, Element elem,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+  void ObserveEx(
+      long row, long col, DOMString strKey, Element elem,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+
+  void DispatchXobjEvent(Element elem, DOMString eventName);
+
+  [ RuntimeEnabled = TrustedDOMTypes, Replaceable ] readonly attribute long row;
+  [ RuntimeEnabled = TrustedDOMTypes, Replaceable ] readonly attribute long col;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute long rows;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute long cols;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute long long handle;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute long long hwnd;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute DOMString objtype;
+
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosNode root;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosNode parent;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosXobj parentGalaxy;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosXobj parentForm;
+
+  // Event handler attributes
+  attribute EventHandler onCloudFormClosed;
+  attribute EventHandler onMdiChildActivate;
+  attribute EventHandler onCloudMessageForXobj;
+};

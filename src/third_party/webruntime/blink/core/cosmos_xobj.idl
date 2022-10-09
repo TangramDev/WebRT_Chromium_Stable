@@ -1,0 +1,63 @@
+
+[Exposed = Window] interface CosmosXobj : EventTarget {
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute DOMString name;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosXobj grid;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosXobj form;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosXobj galaxy;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute Element element;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute Element uiElement;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute Element refElement;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute Element eventElement;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute Element propertyElement;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute Element messageElement;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute DocumentFragment docFragment;
+
+  attribute DOMString msgID;
+  attribute DOMString caption;
+  attribute CosmosXobj sender;
+  attribute Element workElement;
+
+  DOMString getStr(DOMString strKey);
+  void setStr(DOMString strKey, DOMString value);
+  long getLong(DOMString strKey);
+  void setLong(DOMString strKey, long value);
+  long long getInt64(DOMString strKey);
+  void setInt64(DOMString strKey, long long value);
+  float getFloat(DOMString strKey);
+  void setFloat(DOMString strKey, float value);
+
+  void ShowWebContent(DOMString strParentDivName, DOMString strDivName);
+  void setVisibleElement(DOMString strKey, Element value);
+  Element getVisibleElement(DOMString strKey);
+
+  [Affects = Nothing] Element getElementById(DOMString strID);
+  [Affects = Nothing] NodeList getElementsByName(DOMString localName);
+  [Affects = Nothing] HTMLCollection getElementsByTagName(DOMString localName);
+
+  void sendMessage(
+      [DefaultValue = Undefined] optional CosmosXobj msg,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+  void addEventListener(DOMString eventName, ApplicationCallback callback);
+  void addEventListener(DOMString subObjName, DOMString eventName,
+                        ApplicationCallback callback);
+  void removeEventListener(DOMString eventName);
+  void BindCtrlValue(
+      DOMString strcontrols,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+
+  attribute EventHandler onCloudMessageForObject;
+  attribute EventHandler onCloudMessageForXobj;
+  attribute EventHandler onMessageReceived;
+  attribute EventHandler onXobjCreated;
+};

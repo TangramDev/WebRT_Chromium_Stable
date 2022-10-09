@@ -1,0 +1,43 @@
+
+[Exposed = Window] interface CosmosWinform : CosmosXobj {
+  // Message API
+  CosmosNode getXobj(DOMString galaxyName,
+                     optional DOMString clusterName = "default",
+                     optional DOMString gridName = "default");
+  CosmosNode getXobj(Element elem);
+  CosmosGalaxy getGalaxy(DOMString galaxyName);
+  void Observe(
+      DOMString strCtrlName, DOMString strKey, DOMString xml,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+  void Observe(
+      DOMString strCtrlName, DOMString strKey, Element elem,
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
+
+  void DispatchXobjEvent(Element elem, DOMString eventName);
+
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute boolean isReady;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute long formType;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute long long handle;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosNode mdibindgrid;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosNode mdiwebbindgrid;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosWinform mdiParent;
+  [ RuntimeEnabled = TrustedDOMTypes,
+    Replaceable ] readonly attribute CosmosWinform activeMDIChild;
+
+  // Event handler attributes
+  attribute EventHandler onLoadMdiChildCloudForm;
+  attribute EventHandler onCloudMessageForCloudForm;
+  attribute EventHandler onGalaxyCreated;
+  attribute EventHandler onAllMdiChildRemoved;
+  attribute EventHandler onMdiChildCloudFormReady;
+  attribute EventHandler onMdiCloudFormReady;
+  attribute EventHandler onCloudFormReady;
+  attribute EventHandler onCloudFormClosed;
+  attribute EventHandler onMdiChildActivate;
+};

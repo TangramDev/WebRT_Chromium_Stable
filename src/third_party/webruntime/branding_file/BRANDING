@@ -1,0 +1,10 @@
+COMPANY_FULLNAME=TangramTeam
+COMPANY_SHORTNAME=TangramTeam
+PRODUCT_FULLNAME=WebRuntime Component
+PRODUCT_SHORTNAME=WebRuntime Component
+PRODUCT_INSTALLER_FULLNAME=WebRuntime Installer
+PRODUCT_INSTALLER_SHORTNAME=WebRuntime Installer
+COPYRIGHT=Copyright 2022 TangramTeam. All rights reserved.
+MAC_BUNDLE_ID=org.chromium.Chromium
+MAC_CREATOR_CODE=Cr24
+MAC_TEAM_ID=
