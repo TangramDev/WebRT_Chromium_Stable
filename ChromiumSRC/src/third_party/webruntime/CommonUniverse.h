@@ -1233,10 +1233,6 @@ namespace CommonUniverse {
 			m_pRemoteCosmos = nullptr;
 			m_pChromeRenderFrameHost = g_pWebRTImpl->m_pCreatingChromeRenderFrameHostBase;
 			g_pWebRTImpl->m_pCreatingChromeRenderFrameHostBase = nullptr;
-			if (m_pChromeRenderFrameHost->m_bNTPFrame)
-			{
-				::PostAppMessage(::GetCurrentThreadId(), WM_COSMOSMSG, (WPARAM)this, 20220815);
-			}
 		}
 
 		virtual ~CWebPageImpl() {}
