@@ -45,7 +45,7 @@ How to use <i>Batch Files</i> in Chromium WebRT Patch</i>
 
 <h2 align=center>
 
-How to Use <i>[GetBranch.Bat](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumSRC/getbranch.bat)</i>
+How to Use <i>[GetBranch.Bat](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumSRC/getbranch.bat)</i>
 
 <p align=left>
 
