@@ -25,9 +25,8 @@ Unzip the Patch zip you downloaded.</p>
 </h2>
 
 <h1 align=center>
-How to Use <i>
 
-[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumVer.txt)</i>
+How to Use <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumVer.txt)</i>
 </h1>
 <h2><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 106.0.5249.99.</p>
 </h2>
@@ -37,3 +36,20 @@ How to use <i>Batch Files</i> in Chromium WebRT Patch</i>
 </h1>
 <h2><p>Each Chromium WebRT Patch contains a group of batch files to handle the various work done by WebRuntime for the Chromium Project, including necessary source code modifications, toolchain adjustments, project compilation, and code synchronization with the Chromium Project.</p>
 </h2>
+
+<h1 align=center>
+How to use <i>Batch Files</i> in Chromium WebRT Patch</i>
+</h1>
+<h2><p>Each Chromium WebRT Patch contains a group of batch files to handle the various work done by WebRuntime for the Chromium Project, including necessary source code modifications, toolchain adjustments, project compilation, and code synchronization with the Chromium Project.</p>
+</h2>
+
+<h2 align=center>
+
+How to Use <i>[GetBranch.Bat](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumSRC/getbranch.bat)</i>
+
+<p align=left>
+
+<div align=left>
+
+The role of GetBranch is to create a new source code branch based on the Tag value of the given Chromium Project version. GetBranch.Bat requires two parameters. The first parameter is the Tag value provided by [<i>ChromiumVer.txt</i>](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt), and the second parameter is the name of the new branch you wish to create.</div></p>
+<h2>
