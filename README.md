@@ -23,3 +23,17 @@ Preparation: <i>Download Chromium Source Code Patch</i>
 Unzip the Patch zip you downloaded.</p>
 </p> 
 </h2>
+
+<h1 align=center>
+How to Use <i>
+
+[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumVer.txt)</i>
+</h1>
+<h2><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 106.0.5249.99.</p>
+</h2>
+
+<h1 align=center>
+How to use <i>Batch Files</i> in Chromium WebRT Patch</i>
+</h1>
+<h2><p>Each Chromium WebRT Patch contains a group of batch files to handle the various work done by WebRuntime for the Chromium Project, including necessary source code modifications, toolchain adjustments, project compilation, and code synchronization with the Chromium Project.</p>
+</h2>
