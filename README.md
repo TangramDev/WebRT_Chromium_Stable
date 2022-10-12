@@ -56,3 +56,43 @@ How to Use <i>[GetWebRTbranch.Bat](https://github.com/TangramDev/WebRT_Chromium_
 
 <div align=left>What GetWebRTbranch does is to create a new <i>WebRuntime-Enabled</i> source code Branch based on the Tag value for a given Chromium Project version. GetWebRTbranch.Bat requires three parameters. The first parameter is the Tag value of the Chromium version expected by the new branch you want to create, the second parameter is the name of the new branch you want to create, and the third parameter is the name of a code branch that already supports WebRuntime</div></p>
 </h2>
+
+<h1 align=center>
+
+Merge the [Chromium WebRT Patch](https://github.com/TangramDev/WebRT_Chromium_Canary/archive/refs/heads/main.zip) into your <i>Chromium Project Source Code</i>
+</h1>
+<h2 align=center>
+<p align=left>
+
+<div align=left>If you have successfully fetched the source code of the Chromium Project, assuming that the path of the folder where your source code is located is "d:\webrt\m108", we first need to create a "WebRT base branch", you need to Give this branch an appropriate name, eg "WebRTBase".</div></p>
+
+<div align=left>
+	
+Unzip the [Chromium WebRT Patch Archive](https://github.com/TangramDev/WebRT_Chromium_Canary/archive/refs/heads/main.zip), and then copy all the batch files in it to the chromium source code folder, as shown in the following figure:	
+</div>
+
+<div align=center><img src="https://user-images.githubusercontent.com/26355688/195234682-9a78ef26-6e19-47b9-85ed-5019241e4327.png" width="75%"/></div>
+<div align=left>
+<p>After copying all batch files,You need to open "cmd.exe" as administrator, and execute the following command:
+
+	$ cd/d d:\webrt\m108\src
+
+as shown in the following figure:</p>
+<div align=center>
+
+![image](https://user-images.githubusercontent.com/26355688/195236900-369331ae-a914-4537-9340-5292fb1c86f2.png)</div>
+
+<p>execute the following command:
+
+	$ ..\getbranch chromium_tag WebRTBase
+</p>
+<p>
+	
+Here, chromium_tag is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumVer.txt)</i>, and WebRTBase is the branch name of "WebRT Base Branch"</p>
+
+<p>Copy the folder "ChromiumSRC\src" (this folder is included in the unzipped folder of Chromium WebRT Patch) to "d:\WebRT\M108\src", execute the following command:
+	
+	$ git add . && git commit -am "WebRuntime Support"
+</p>
+<p>we have completed the merging of the patch package into the Chromium source code.</p>
+</h2>
