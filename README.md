@@ -108,3 +108,15 @@ WebRuntime based on<br/> a <i>Specific Chromium Project Stable Version: 106.0.52
 Here, WebRTBase is the source code branch that supports WebRuntime created in the above steps, and x is an integer, you will obtain a branch with webruntime support you expected.
 </p>
 </h2>
+
+<h1 align=center>
+
+Generate <i>Visual Studio</i> Solution
+</h1>
+<h2>
+<p>Execute the following command:
+	
+	$ ..\gb
+Normally, you need to delete the default subfolder of the out folder
+</p>
+</h2>
