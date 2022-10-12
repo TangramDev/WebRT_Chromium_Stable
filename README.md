@@ -99,7 +99,7 @@ Here, 106.0.5249.y is the Tag value contained in <i>[ChromiumVer.txt](https://gi
 
 <h1 align=center>
 
-WebRuntime based on a <i>Specific Chromium Project Stable Version: 106.0.5249.x</i>
+WebRuntime based on<br/> a <i>Specific Chromium Project Stable Version: 106.0.5249.x</i>
 </h1>
 <h2>
 <p>Execute the following command:
