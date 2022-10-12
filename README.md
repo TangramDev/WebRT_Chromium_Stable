@@ -84,11 +84,11 @@ as shown in the following figure:</p>
 
 <p>execute the following command:
 
-	$ ..\getbranch chromium_tag WebRTBase
+	$ ..\getbranch 106.0.5249.y WebRTBase
 </p>
 <p>
 	
-Here, chromium_tag is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and WebRTBase is the branch name of "WebRT Base Branch"</p>
+Here, 106.0.5249.y is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and WebRTBase is the branch name of "WebRT Base Branch"</p>
 
 <p>Copy the folder "ChromiumSRC\src" (this folder is included in the unzipped folder of Chromium WebRT Patch) to "d:\WebRT\M108\src", execute the following command:
 	
