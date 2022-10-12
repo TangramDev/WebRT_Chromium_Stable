@@ -26,7 +26,7 @@ Unzip the Patch zip you downloaded.</p>
 
 <h1 align=center>
 
-How to Use <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumVer.txt)</i>
+How to Use <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>
 </h1>
 <h2><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 106.0.5249.99.</p>
 </h2>
@@ -95,4 +95,16 @@ Here, chromium_tag is the Tag value contained in <i>[ChromiumVer.txt](https://gi
 	$ git add . && git commit -am "WebRuntime Support"
 </p>
 <p>we have completed the merging of the patch package into the Chromium source code.</p>
+</h2>
+
+<h1 align=center>
+
+WebRuntime based on a <i>Specific Chromium Project Stable Version: 106.0.5249.x</i>
+</h1>
+<h2>
+<p>Execute the following command:
+	
+	$ ..\getWebRTbranch 106.0.5249.x 106.0.5249.y WebRTBase
+Here, 106.0.5249.y comes from [<i>ChromiumVer.txt</i>](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt), WebRTBase is the source code branch that supports WebRuntime created in the above steps, and x is an integer.
+</p>
 </h2>
