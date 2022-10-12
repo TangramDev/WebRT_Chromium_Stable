@@ -50,7 +50,7 @@ The role of GetBranch is to create a new source code branch based on the Tag val
 
 <h2 align=center>
 
-How to Use <i>[GetWebRTbranch.Bat](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumSRC/getWebRTbranch.bat)</i>
+How to Use <i>[GetWebRTbranch.Bat](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumSRC/getWebRTbranch.bat)</i>
 
 <p align=left>
 
@@ -59,7 +59,7 @@ How to Use <i>[GetWebRTbranch.Bat](https://github.com/TangramDev/WebRT_Chromium_
 
 <h1 align=center>
 
-Merge the [Chromium WebRT Patch](https://github.com/TangramDev/WebRT_Chromium_Canary/archive/refs/heads/main.zip) into your <i>Chromium Project Source Code</i>
+Merge the [Chromium WebRT Patch](https://github.com/TangramDev/WebRT_Chromium_Stable/archive/refs/heads/main.zip) into your <i>Chromium Project Source Code</i>
 </h1>
 <h2 align=center>
 <p align=left>
@@ -68,7 +68,7 @@ Merge the [Chromium WebRT Patch](https://github.com/TangramDev/WebRT_Chromium_Ca
 
 <div align=left>
 	
-Unzip the [Chromium WebRT Patch Archive](https://github.com/TangramDev/WebRT_Chromium_Canary/archive/refs/heads/main.zip), and then copy all the batch files in it to the chromium source code folder, as shown in the following figure:	
+Unzip the [Chromium WebRT Patch Archive](https://github.com/TangramDev/WebRT_Chromium_Stable/archive/refs/heads/main.zip), and then copy all the batch files in it to the chromium source code folder, as shown in the following figure:	
 </div>
 
 <div align=center><img src="https://user-images.githubusercontent.com/26355688/195234682-9a78ef26-6e19-47b9-85ed-5019241e4327.png" width="75%"/></div>
@@ -88,7 +88,7 @@ as shown in the following figure:</p>
 </p>
 <p>
 	
-Here, chromium_tag is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Canary/blob/main/ChromiumVer.txt)</i>, and WebRTBase is the branch name of "WebRT Base Branch"</p>
+Here, chromium_tag is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and WebRTBase is the branch name of "WebRT Base Branch"</p>
 
 <p>Copy the folder "ChromiumSRC\src" (this folder is included in the unzipped folder of Chromium WebRT Patch) to "d:\WebRT\M108\src", execute the following command:
 	
