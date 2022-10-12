@@ -37,12 +37,6 @@ How to use <i>Batch Files</i> in Chromium WebRT Patch</i>
 <h2><p>Each Chromium WebRT Patch contains a group of batch files to handle the various work done by WebRuntime for the Chromium Project, including necessary source code modifications, toolchain adjustments, project compilation, and code synchronization with the Chromium Project.</p>
 </h2>
 
-<h1 align=center>
-How to use <i>Batch Files</i> in Chromium WebRT Patch</i>
-</h1>
-<h2><p>Each Chromium WebRT Patch contains a group of batch files to handle the various work done by WebRuntime for the Chromium Project, including necessary source code modifications, toolchain adjustments, project compilation, and code synchronization with the Chromium Project.</p>
-</h2>
-
 <h2 align=center>
 
 How to Use <i>[GetBranch.Bat](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumSRC/getbranch.bat)</i>
