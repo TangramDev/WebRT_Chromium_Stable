@@ -1,5 +1,5 @@
 <h1 align=center>
-Working with <i>Latest Chromium Stable Source Code</i>
+Working with <i>Latest Chromium Source Code</i>
 </h1>
 <h2  align=left><p>
 
@@ -9,6 +9,7 @@ Working with <i>Latest Chromium Stable Source Code</i>
 [**Building Chromium for Windows**](https://chromium.googlesource.com/chromium/src/+/main/docs/windows_build_instructions.md)</div>
 
 to fetch the source code of the latest <i>Full Version of the Chromium Project</i>, and to ensure that this version can be compiled correctly so that the compiled results can run properly. The IDE Environment we work here is Visual Studio 2022 17.3.5(requires C++/CLI support).</p>
+</p> 
 </h2>
 <h1 align=center>
 Preparation: <i>Download Chromium Source Code Patch</i>
@@ -27,8 +28,9 @@ Unzip the Patch zip you downloaded.</p>
 
 About <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>
 </h1>
-<h2><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 106.0.5249.99.</p>
+<h2><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 107.0.5304.34.</p>
 </h2>
+
 
 <h1 align=center>
 About <i>Batch Files</i> in Chromium WebRT Patch</i>
@@ -87,7 +89,7 @@ as shown in the following figure:</p>
 </p>
 <p>
 	
-Here, "<ins>106.0.5249.a</ins>" is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and WebRTBase is the branch name of "WebRT Base Branch"</p>
+Here, "<ins>107.0.5304.a</ins>" is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and WebRTBase is the branch name of "WebRT Base Branch"</p>
 
 <p>Copy the folder "ChromiumSRC\src" (this folder is included in the unzipped folder of Chromium WebRT Patch) to "d:\WebRT\M108\src", execute the following command:
 	
@@ -98,7 +100,7 @@ Here, "<ins>106.0.5249.a</ins>" is the Tag value contained in <i>[ChromiumVer.tx
 
 <h1 align=center>
 
-WebRuntime based on<br/> a <i>Specific Chromium Project Stable Version: 106.0.5249.x</i>
+WebRuntime based on<br/> a <i>Specific Chromium Project Version: 107.0.5304.x</i>
 </h1>
 <h2>
 <p>Execute the following command:
