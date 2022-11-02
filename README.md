@@ -81,10 +81,7 @@ Unzip the [Chromium WebRT Patch Archive](https://github.com/TangramDev/WebRT_Chr
 	$ cd/d d:\webrt\m108\src
 
 as shown in the following figure:</p>
-<div align=center>
-
-![image](https://user-images.githubusercontent.com/26355688/195236900-369331ae-a914-4537-9340-5292fb1c86f2.png)</div>
-
+<div align=center id="cmd"><img src="https://user-images.githubusercontent.com/26355688/199431665-1aa299b4-d1ec-4c6d-83ad-865541a214d6.jpg" width="75%"/></div> </p>
 <p>execute the following command:
 
 	$ ..\getbranch a Base
