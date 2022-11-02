@@ -65,7 +65,7 @@ Merge the [Chromium WebRT Patch](https://github.com/TangramDev/WebRT_Chromium_St
 <h2 align=center>
 <p align=left>
 
-<div align=left>If you have successfully fetched the source code of the Chromium Project, assuming that the path of the folder where your source code is located is "d:\webrt\m108", we first need to create a "Base branch", you need to Give this branch an appropriate name, eg "Base".</div>
+<div align=left>If you have successfully fetched the source code of the Chromium Project, assuming that the path of the folder where your source code is located is "d:\webrt\m108", we first need to create a "Base branch", you need to Give this branch an appropriate name, eg "Base".</div><br/>
 <div align=center id="BaseBranch"><img src="https://user-images.githubusercontent.com/26355688/199427816-d8b37d95-7350-44b3-8df6-efd953e6055e.jpg" width="80%"/></div> </p>
 
  
