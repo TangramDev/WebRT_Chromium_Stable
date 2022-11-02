@@ -65,8 +65,10 @@ Merge the [Chromium WebRT Patch](https://github.com/TangramDev/WebRT_Chromium_St
 <h2 align=center>
 <p align=left>
 
-<div align=left>If you have successfully fetched the source code of the Chromium Project, assuming that the path of the folder where your source code is located is "d:\webrt\m108", we first need to create a "WebRT base branch", you need to Give this branch an appropriate name, eg "WebRTBase".</div></p>
+<div align=left>If you have successfully fetched the source code of the Chromium Project, assuming that the path of the folder where your source code is located is "d:\webrt\m108", we first need to create a "Base branch", you need to Give this branch an appropriate name, eg "Base".</div>
+<div align=center id="BaseBranch"><img src="https://user-images.githubusercontent.com/26355688/199427816-d8b37d95-7350-44b3-8df6-efd953e6055e.jpg" width="80%"/></div> </p>
 
+ 
 <div align=left>
 	
 Unzip the [Chromium WebRT Patch Archive](https://github.com/TangramDev/WebRT_Chromium_Stable/archive/refs/heads/main.zip), and then copy all the batch files in it to the chromium source code folder, as shown in the following figure:	
@@ -85,11 +87,11 @@ as shown in the following figure:</p>
 
 <p>execute the following command:
 
-	$ ..\getbranch a WebRTBase
+	$ ..\getbranch a Base
 </p>
 <p>
 	
-Here, "<ins>107.0.5304.a</ins>" is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and WebRTBase is the branch name of "WebRT Base Branch"</p>
+Here, "<ins>107.0.5304.a</ins>" is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and "Base" is the branch name of "WebRT Base Branch"</p>
 
 <p>Copy the folder "ChromiumSRC\src" (this folder is included in the unzipped folder of Chromium WebRT Patch) to "d:\WebRT\M108\src", execute the following command:
 	
@@ -105,8 +107,8 @@ WebRuntime based on<br/> a <i>Specific Chromium Project Version: 107.0.5304.x</i
 <h2>
 <p>Execute the following command:
 	
-	$ ..\getWebRTbranch x your_branch_name WebRTBase
-Here, WebRTBase is the source code branch that supports WebRuntime created in the above steps, and x is an integer, you will obtain a branch with webruntime support you expected.
+	$ ..\getWebRTbranch x your_branch_name Base
+Here, "Base" is the source code branch that supports WebRuntime created in the above steps, and x is an integer, you will obtain a branch with webruntime support you expected.
 </p>
 </h2>
 
