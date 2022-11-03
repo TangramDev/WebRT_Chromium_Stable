@@ -8,7 +8,7 @@ Working with <i>Latest Chromium Source Code</i>
 
 [**Building Chromium for Windows**](https://chromium.googlesource.com/chromium/src/+/main/docs/windows_build_instructions.md)</div>
 
-to fetch the source code of the latest <i>Full Version of the Chromium Project</i>, and to ensure that this version can be compiled correctly so that the compiled results can run properly. The IDE Environment we work here is Visual Studio 2022 17.3.5(requires C++/CLI support).</p>
+to fetch the source code of the latest <i>Full Version of the Chromium Project</i>, and to ensure that this version can be compiled correctly so that the compiled results can run properly. The IDE Environment we work here is Visual Studio 2022 17.3.5(or later).</p>
 </p> 
 </h2>
 <h1 align=center>
