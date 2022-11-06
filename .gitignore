@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# WebRuntime-specific files
+PatchFile/
+ChromiumSRC/src/chrome/browser/ui/webui/
+ChromiumSRC/src/ui/gfx/win/r*.cc
+
 # User-specific files
 *.rsuser
 *.suo
@@ -23,11 +28,16 @@ mono_crash.*
 [Rr]eleases/
 x64/
 x86/
+TabbedWnd/
+MfcTabCtrl/
+[Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
 [Bb]in/
 [Oo]bj/
+[Oo]ut/
+# [Oo]utput/
 [Ll]og/
 [Ll]ogs/
 
@@ -61,8 +71,20 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
 # StyleCop
 StyleCopReport.xml
+
+# Files built by WebRuntime
+*.pak
+*.bin
+*.tangram
+*.pb
+*.lib
+*.exp
+*.dat
 
 # Files built by Visual Studio
 *_i.c
@@ -70,6 +92,9 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
+*.rar
+*.dll
+*.exe
 *.obj
 *.iobj
 *.pch
@@ -136,6 +161,11 @@ _TeamCity*
 # AxoCover is a Code Coverage Tool
 .axoCover/*
 !.axoCover/settings.json
+
+# Coverlet is a free, cross platform Code Coverage Tool
+coverage*.json
+coverage*.xml
+coverage*.info
 
 # Visual Studio code coverage results
 *.coverage
@@ -348,3 +378,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Fody - auto-generated XML schema
+FodyWeavers.xsd
