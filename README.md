@@ -97,38 +97,38 @@ Here, "<ins>107.0.5304.a</ins>" is the Tag value contained in <i>[ChromiumVer.tx
 <p>we have completed the merging of the patch package into the Chromium source code.</p>
 </h2>
 
-<h1 align=center>
+<h2 align=center>
 
-WebRuntime based on<br/> a <i>Specific Chromium Project Version: 107.0.5304.x</i>
-</h1>
-<h2>
+WebRuntime based on<br/> a <i>Specific Chromium Project Version: 107.0.5304.x</i>(x>=62)
+</h2>
+<h3>
 <p>Execute the following command:
 	
 	$ ..\getWebRTbranch x your_branch_name Base
 Here, "Base" is the source code branch that supports WebRuntime created in the above steps, and x is an integer, you will obtain a branch with webruntime support you expected.
 </p>
-</h2>
+</h3>
 
-<h1 align=center>
+<h2 align=center>
 
 Generate <i>Visual Studio</i> Solution
-</h1>
-<h2>
+</h2>
+<h3>
 <p>Execute the following command:
 	
 	$ ..\gb
 Normally, you need to delete the default subfolder of the out folder
 </p>
-</h2>
+</h3>
 
-<h1 align=center>
+<h2 align=center>
 
 Compiling <i>Chromium with WebRuntime Support</i>
-</h1>
-<h2>
+</h2>
+<h3>
 <p>Execute the following command:
 	
 	$ ..\bd tasknumber
 Normally, tasknumber=2*cpucorenumber+2.
 </p>
-</h2>
+</h3>
