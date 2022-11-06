@@ -11,10 +11,10 @@ Working with <i>Latest Chromium Source Code</i>
 to fetch the source code of the latest <i>Full Version of the Chromium Project</i>, and to ensure that this version can be compiled correctly so that the compiled results can run properly. The IDE Environment we work here is Visual Studio 2022 17.3.5(or later).</p>
 </p> 
 </h2>
-<h1 align=center>
+<h2 align=center>
 Preparation: <i>Download Chromium Source Code Patch</i>
-</h1>
-<h2  align=left><p>You'll need to download the latest Chromium Stable Patch zip package. 
+</h2>
+<h3  align=left><p>You'll need to download the latest Chromium Stable Patch zip package. 
 <div align=center>
 
 [**<i><ins>Stable Patch</ins></i>**](https://github.com/TangramDev/WebRT_Chromium_Stable/archive/refs/heads/main.zip)
@@ -22,21 +22,21 @@ Preparation: <i>Download Chromium Source Code Patch</i>
   
 Unzip the Patch zip you downloaded.</p>
 </p> 
-</h2>
+</h3>
 
-<h1 align=center>
+<h2 align=center>
 
 About <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>
-</h1>
-<h2><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 107.0.5304.34.</p>
 </h2>
+<h3><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 107.0.5304.34.</p>
+</h3>
 
 
-<h1 align=center>
+<h2 align=center>
 About <i>Batch Files</i> in Chromium WebRT Patch</i>
-</h1>
-<h2><p>Each Chromium WebRT Patch contains a group of batch files to handle the various work done by WebRuntime for the Chromium Project, including necessary source code modifications, toolchain adjustments, project compilation, and code synchronization with the Chromium Project.</p>
 </h2>
+<h3><p>Each Chromium WebRT Patch contains a group of batch files to handle the various work done by WebRuntime for the Chromium Project, including necessary source code modifications, toolchain adjustments, project compilation, and code synchronization with the Chromium Project.</p>
+</h3>
 
 <h2 align=center>
 
@@ -58,11 +58,11 @@ About <i>[GetWebRTbranch.Bat](https://github.com/TangramDev/WebRT_Chromium_Stabl
 <div align=left>What GetWebRTbranch does is to create a new <i>WebRuntime-Enabled</i> source code Branch based on the Tag value for a given Chromium Project version. GetWebRTbranch.Bat requires three parameters. The first parameter is the Tag value of the Chromium version expected by the new branch you want to create, the second parameter is the name of the new branch you want to create, and the third parameter is the name of a code branch that already supports WebRuntime</div></p>
 </h2>
 
-<h1 align=center>
+<h2 align=center>
 
 Merge the [Chromium WebRT Patch](https://github.com/TangramDev/WebRT_Chromium_Stable/archive/refs/heads/main.zip) into your <i>Chromium Project Source Code</i>
-</h1>
-<h2 align=center>
+</h2>
+<h3 align=center>
 <p align=left>
 
 <div align=left>If you have successfully fetched the source code of the Chromium Project, assuming that the path of the folder where your source code is located is "d:\webrt\m108", we first need to create a "Base branch", you need to Give this branch an appropriate name, eg "Base".</div><br/>
@@ -95,11 +95,11 @@ Here, "<ins>107.0.5304.a</ins>" is the Tag value contained in <i>[ChromiumVer.tx
 	$ git add . && git commit -am "WebRuntime Support"
 </p>
 <p>we have completed the merging of the patch package into the Chromium source code.</p>
-</h2>
+</h3>
 
 <h2 align=center>
 
-WebRuntime based on<br/> a <i>Specific Chromium Project Version: 107.0.5304.x</i>(x>=62)
+WebRuntime based on<br/> a <i>Specific Chromium Project<ins> Version: 107.0.5304.x</ins></i>(x>=62)
 </h2>
 <h3>
 <p>Execute the following command:
