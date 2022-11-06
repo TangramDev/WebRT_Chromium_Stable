@@ -5,6 +5,7 @@
 
 # WebRuntime-specific files
 PatchFile/
+ChromiumSRC/src/PatchFile/
 ChromiumSRC/src/chrome/browser/ui/webui/
 ChromiumSRC/src/ui/gfx/win/r*.cc
 
