@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors
+// Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -81,7 +81,9 @@
 #include "chrome/browser/ui/browser_list.h"
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
 #include "chrome/browser/ui/ui_features.h"
-#include "chrome/browser/ui/views/side_panel/history_clusters/history_clusters_side_panel_coordinator.h"
+#include "chrome/browser/ui/views/frame/browser_view.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_coordinator.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_entry.h"
 #include "chrome/browser/upgrade_detector/upgrade_detector.h"
 #endif
 
@@ -182,7 +184,7 @@ history::URLDatabase* ChromeAutocompleteProviderClient::GetInMemoryDatabase() {
 
   // This method is called in unit test contexts where the HistoryService isn't
   // loaded.
-  return history_service ? history_service->InMemoryDatabase() : nullptr;
+  return history_service ? history_service->InMemoryDatabase() : NULL;
 }
 
 InMemoryURLIndex* ChromeAutocompleteProviderClient::GetInMemoryURLIndex() {
@@ -460,7 +462,7 @@ void ChromeAutocompleteProviderClient::CloseIncognitoWindows() {
 #endif  // !BUILDFLAG(IS_ANDROID)
 }
 
-bool ChromeAutocompleteProviderClient::OpenJourneys(const std::string& query) {
+bool ChromeAutocompleteProviderClient::OpenJourneys() {
 #if !BUILDFLAG(IS_ANDROID)
   if (!base::FeatureList::IsEnabled(features::kUnifiedSidePanel) ||
       !base::FeatureList::IsEnabled(features::kSidePanelJourneys) ||
@@ -472,13 +474,16 @@ bool ChromeAutocompleteProviderClient::OpenJourneys(const std::string& query) {
   if (!browser)
     return false;
 
-  if (auto* history_clusters_side_panel_coordinator =
-          HistoryClustersSidePanelCoordinator::BrowserUserData::FromBrowser(
-              browser)) {
-    history_clusters_side_panel_coordinator->Show(query);
+  BrowserView* const browser_view =
+      BrowserView::GetBrowserViewForBrowser(browser);
+  if (!browser_view)
+    return false;
+
+  if (browser_view->side_panel_coordinator()) {
+    browser_view->side_panel_coordinator()->Show(
+        SidePanelEntry::Id::kHistoryClusters);
     return true;
   }
-
 #endif  // !BUILDFLAG(IS_ANDROID)
 
   return false;
