@@ -24,7 +24,6 @@
 #include "third_party/blink/public/common/frame/user_activation_update_source.h"
 #include "third_party/blink/public/common/permissions_policy/permissions_policy_features.h"
 #include "third_party/blink/public/common/tokens/tokens.h"
-#include "third_party/blink/public/mojom/back_forward_cache_not_restored_reasons.mojom-forward.h"
 #include "third_party/blink/public/mojom/blob/blob_url_store.mojom-shared.h"
 #include "third_party/blink/public/mojom/commit_result/commit_result.mojom-shared.h"
 #include "third_party/blink/public/mojom/context_menu/context_menu.mojom-shared.h"
@@ -117,7 +116,7 @@ enum class TreeScopeType;
 // Interface for interacting with in process frames. This contains methods that
 // require interacting with a frame's document.
 // FIXME: Move lots of methods from WebFrame in here.
-class BLINK_EXPORT WebLocalFrame : public WebFrame {
+class WebLocalFrame : public WebFrame {
  public:
   // Creates a main local frame for the WebView. Can only be invoked when no
   // main frame exists yet. Call Close() to release the returned frame.
@@ -125,7 +124,7 @@ class BLINK_EXPORT WebLocalFrame : public WebFrame {
   // TODO(dcheng): The argument order should be more consistent with
   // CreateLocalChild() and CreateRemoteChild() in WebRemoteFrame... but it's so
   // painful...
-  static WebLocalFrame* CreateMainFrame(
+  BLINK_EXPORT static WebLocalFrame* CreateMainFrame(
       WebView*,
       WebLocalFrameClient*,
       blink::InterfaceRegistry*,
@@ -157,12 +156,13 @@ class BLINK_EXPORT WebLocalFrame : public WebFrame {
   //
   // Otherwise, if the load should not commit, call Detach() to discard the
   // frame.
-  static WebLocalFrame* CreateProvisional(WebLocalFrameClient*,
-                                          InterfaceRegistry*,
-                                          const LocalFrameToken& frame_token,
-                                          WebFrame* previous_web_frame,
-                                          const FramePolicy&,
-                                          const WebString& name);
+  BLINK_EXPORT static WebLocalFrame* CreateProvisional(
+      WebLocalFrameClient*,
+      InterfaceRegistry*,
+      const LocalFrameToken& frame_token,
+      WebFrame* previous_web_frame,
+      const FramePolicy&,
+      const WebString& name);
 
   // Creates a new local child of this frame. Similar to the other methods that
   // create frames, the returned frame should be freed by calling Close() when
@@ -176,15 +176,16 @@ class BLINK_EXPORT WebLocalFrame : public WebFrame {
   // Returns the WebFrame associated with the current V8 context. This
   // function can return 0 if the context is associated with a Document that
   // is not currently being displayed in a Frame.
-  static WebLocalFrame* FrameForCurrentContext();
+  BLINK_EXPORT static WebLocalFrame* FrameForCurrentContext();
 
   // Returns the frame corresponding to the given context. This can return 0
   // if the context is detached from the frame, or if the context doesn't
   // correspond to a frame (e.g., workers).
-  static WebLocalFrame* FrameForContext(v8::Local<v8::Context>);
+  BLINK_EXPORT static WebLocalFrame* FrameForContext(v8::Local<v8::Context>);
 
   // Returns the frame associated with the |frame_token|.
-  static WebLocalFrame* FromFrameToken(const LocalFrameToken& frame_token);
+  BLINK_EXPORT static WebLocalFrame* FromFrameToken(
+      const LocalFrameToken& frame_token);
 
   virtual WebLocalFrameClient* Client() const = 0;
 
@@ -216,12 +217,6 @@ class BLINK_EXPORT WebLocalFrame : public WebFrame {
   // loaded document changes (e.g. frame navigated to a different document).
   virtual ui::AXTreeID GetAXTreeID() const = 0;
 
-  // Sets BackForwardCache NotRestoredReasons for the current frame.
-  virtual void SetNotRestoredReasons(
-      const mojom::BackForwardCacheNotRestoredReasonsPtr&) = 0;
-  // Returns if the current frame's NotRestoredReasons has any blocking reasons.
-  virtual bool HasBlockingReasons() = 0;
-
   // Hierarchy ----------------------------------------------------------
 
   // Returns true if the current frame is a provisional frame.
@@ -242,7 +237,7 @@ class BLINK_EXPORT WebLocalFrame : public WebFrame {
   // Creates and returns an associated FrameWidget for this frame. The frame
   // must be a LocalRoot. The WebLocalFrame maintins ownership of the
   // WebFrameWidget that was created.
-  WebFrameWidget* InitializeFrameWidget(
+  BLINK_EXPORT WebFrameWidget* InitializeFrameWidget(
       CrossVariantMojoAssociatedRemote<mojom::FrameWidgetHostInterfaceBase>
           frame_widget_host,
       CrossVariantMojoAssociatedReceiver<mojom::FrameWidgetInterfaceBase>
@@ -433,7 +428,6 @@ class BLINK_EXPORT WebLocalFrame : public WebFrame {
                                     mojom::LoadEventBlockingOption,
                                     WebScriptExecutionCallback,
                                     BackForwardCacheAware,
-                                    mojom::WantResultOption,
                                     mojom::PromiseResultOption) = 0;
 
   // Logs to the console associated with this frame. If |discard_duplicates| is
@@ -848,19 +842,13 @@ class BLINK_EXPORT WebLocalFrame : public WebFrame {
   // page-orientation.
   virtual gfx::Size SpoolSizeInPixelsForTesting(
       const gfx::Size& page_size_in_pixels,
-      const WebVector<uint32_t>& pages) = 0;
-  virtual gfx::Size SpoolSizeInPixelsForTesting(
-      const gfx::Size& page_size_in_pixels,
       uint32_t page_count) = 0;
 
-  // Prints the given pages of the frame into the canvas, with page boundaries
-  // drawn as one pixel wide blue lines. By default, all pages are printed. This
-  // method exists to support web tests.
-  virtual void PrintPagesForTesting(
-      cc::PaintCanvas*,
-      const gfx::Size& page_size_in_pixels,
-      const gfx::Size& spool_size_in_pixels,
-      const WebVector<uint32_t>* pages = nullptr) = 0;
+  // Prints the frame into the canvas, with page boundaries drawn as one pixel
+  // wide blue lines. This method exists to support web tests.
+  virtual void PrintPagesForTesting(cc::PaintCanvas*,
+                                    const gfx::Size& page_size_in_pixels,
+                                    const gfx::Size& spool_size_in_pixels) = 0;
 
   // Returns the bounds rect for current selection. If selection is performed
   // on transformed text, the rect will still bound the selection but will

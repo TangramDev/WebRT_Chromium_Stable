@@ -1,4 +1,4 @@
-// Copyright 2012 The Chromium Authors
+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -83,8 +83,9 @@ InterceptionManager::InterceptionData::InterceptionData(
 
 InterceptionManager::InterceptionData::~InterceptionData() {}
 
-InterceptionManager::InterceptionManager(TargetProcess& child_process)
-    : child_(child_process), names_used_(false) {}
+InterceptionManager::InterceptionManager(TargetProcess& child_process,
+                                         bool relaxed)
+    : child_(child_process), names_used_(false), relaxed_(relaxed) {}
 InterceptionManager::~InterceptionManager() {}
 
 bool InterceptionManager::AddToPatchedFunctions(
@@ -454,21 +455,21 @@ ResultCode InterceptionManager::PatchClientFunctions(
 
   std::unique_ptr<ServiceResolverThunk> thunk;
 #if defined(_WIN64)
-  thunk = std::make_unique<ServiceResolverThunk>(child_.Process(), true);
+  thunk = std::make_unique<ServiceResolverThunk>(child_.Process(), relaxed_);
 #else
   base::win::OSInfo* os_info = base::win::OSInfo::GetInstance();
   base::win::Version real_os_version = os_info->Kernel32Version();
   if (os_info->IsWowX86OnAMD64()) {
     if (real_os_version >= base::win::Version::WIN10)
-      thunk.reset(new Wow64W10ResolverThunk(child_.Process(), true));
+      thunk.reset(new Wow64W10ResolverThunk(child_.Process(), relaxed_));
     else if (real_os_version >= base::win::Version::WIN8)
-      thunk.reset(new Wow64W8ResolverThunk(child_.Process(), true));
+      thunk.reset(new Wow64W8ResolverThunk(child_.Process(), relaxed_));
     else
-      thunk.reset(new Wow64ResolverThunk(child_.Process(), true));
+      thunk.reset(new Wow64ResolverThunk(child_.Process(), relaxed_));
   } else if (real_os_version >= base::win::Version::WIN8) {
-    thunk.reset(new Win8ResolverThunk(child_.Process(), true));
+    thunk.reset(new Win8ResolverThunk(child_.Process(), relaxed_));
   } else {
-    thunk.reset(new ServiceResolverThunk(child_.Process(), true));
+    thunk.reset(new ServiceResolverThunk(child_.Process(), relaxed_));
   }
 #endif
 

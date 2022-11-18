@@ -32,10 +32,8 @@
 #include "cosmos_node.h"
 #include "cosmos_winform.h"
 
-#include <locale>
 #include "base/guid.h"
 #include "base/strings/string_split.h"
-#include "third_party/blink/public/web/blink.h"
 #include "third_party/blink/public/web/web_local_frame_client.h"
 #include "third_party/blink/renderer/bindings/core/v8/v8_application_callback.h"
 #include "third_party/blink/renderer/core/dom/class_collection.h"
@@ -51,9 +49,11 @@
 #include "third_party/blink/renderer/core/frame/web_local_frame_impl.h"
 #include "third_party/blink/renderer/core/html/html_element.h"
 #include "third_party/blink/renderer/core/html/html_head_element.h"
-#include "third_party/blink/renderer/core/webrt_event_target_names.h"
 #include "third_party/blink/renderer/core/xml/dom_parser.h"
 #include "third_party/blink/renderer/platform/bindings/callback_function_base.h"
+#include "third_party/blink/public/web/blink.h"
+#include <locale>
+#include "third_party/blink/renderer/core/webrt_event_target_names.h"
 #include "third_party/webruntime/ChromeRenderDomProxy.h"
 
 namespace blink {
@@ -1559,6 +1559,15 @@ void Cosmos::sendMessage(CosmosXobj* msg, V8ApplicationCallback* callback) {
   //	"test");
   // if (bwait)
   //	run_loop_.Run();
+}
+
+void Cosmos::openMainWndUrls(String strUrls) {
+  if (m_pRenderframeImpl) {
+    setStr("senderid", getid());
+    setStr("msgID", "OPEN_MainWindowURLs");
+    setStr("openurl", strUrls);
+    m_pRenderframeImpl->SendCosmosMessageEx(session_);
+  }
 }
 
 void Cosmos::openUrl(const String& url, long nBrowserWndOpenDisposition) {
