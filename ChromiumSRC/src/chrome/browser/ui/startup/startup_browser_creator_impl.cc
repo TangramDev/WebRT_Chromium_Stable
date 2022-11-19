@@ -1,4 +1,4 @@
-// Copyright 2012 The Chromium Authors
+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -54,7 +54,6 @@
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
 #include "chrome/browser/ui/webui/welcome/helpers.h"
 #include "chrome/browser/ui/webui/whats_new/whats_new_util.h"
-#include "chrome/browser/web_applications/isolated_web_apps/install_isolated_app_from_command_line.h"
 #include "chrome/browser/web_applications/web_app_provider.h"
 #include "chrome/browser/web_applications/web_app_provider_factory.h"
 #include "chrome/common/chrome_switches.h"
@@ -103,8 +102,6 @@
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
 #include "chrome/browser/chromeos/arc/arc_web_contents_data.h"
-#include "chrome/browser/lacros/browser_launcher.h"
-#include "chrome/browser/profiles/profile_manager.h"
 #include "chromeos/crosapi/mojom/crosapi.mojom.h"
 #include "chromeos/startup/browser_params_proxy.h"
 #endif
@@ -113,27 +110,22 @@ namespace {
 
 // Utility functions ----------------------------------------------------------
 
-// On ChromeOS Ash check the previous apps launching history info to decide
-// whether restore apps.
-//
-// On ChromeOS Lacros restore if the browser has automatically restarted or if
-// performing a full restore.
+// In ChromeOS, if the full restore feature is disabled, always restores apps
+// unconditionally. If the full restore feature is enabled, check the previous
+// apps launching history info to decide whether restore apps.
 //
 // In other platforms, restore apps only when the browser is automatically
 // restarted.
 bool ShouldRestoreApps(bool is_post_restart, Profile* profile) {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-  // In ChromeOS, restore apps only when there are apps launched before reboot.
-  return full_restore::HasAppTypeBrowser(profile->GetPath());
-#elif BUILDFLAG(IS_CHROMEOS_LACROS)
-  auto* primary_user_profile =
-      g_browser_process->profile_manager()->GetProfileByPath(
-          ProfileManager::GetPrimaryUserProfilePath());
+  // If the full restore feature is enabled, check the full restore file.
+  // Restore apps only when there are apps launched before reboot.
+  if (full_restore::features::IsFullRestoreEnabled())
+    return full_restore::HasAppTypeBrowser(profile->GetPath());
 
-  return is_post_restart ||
-         (primary_user_profile &&
-          BrowserLauncher::GetForProfile(primary_user_profile)
-              ->is_launching_for_full_restore());
+  // If the full restore feature is disabled, always restores apps
+  // unconditionally.
+  return true;
 #else
   return is_post_restart;
 #endif
@@ -170,9 +162,11 @@ ChromeBrowserFactory::ChromeBrowserFactory() {
   if (g_pWebRTImpl == nullptr) {
     HMODULE hModule = ::GetModuleHandle(L"universe.dll");
     if (hModule) {
-      typedef CommonUniverse::CWebRTImpl*(__stdcall * GetWebRTImpl)(IWebRT**);
+      typedef CommonUniverse::CWebRTImpl*(__stdcall *
+                                            GetWebRTImpl)(IWebRT**);
       GetWebRTImpl _pCosmosFunction;
-      _pCosmosFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+      _pCosmosFunction =
+          (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
       if (_pCosmosFunction != NULL) {
         IWebRT* pCosmos = nullptr;
         g_pWebRTImpl = _pCosmosFunction(&pCosmos);
@@ -225,8 +219,8 @@ HWND ChromeBrowserFactory::CreateBrowser(HWND hParent, CString strXml) {
     if (b == true) {
       if (g_pWebRTImpl && ::IsWindow(hParent))
         g_pWebRTImpl->m_hParent = hParent;
-      Browser::CreateParams params_ = Browser::CreateParams(profile_, false);
-      Browser* browser = Browser::Create(params_);
+      Browser::CreateParams params = Browser::CreateParams(profile_, false);
+      Browser* browser = Browser::Create(params);
 
       bool first_tab = true;
       for (size_t i = 0; i < tabs.size(); ++i) {
@@ -306,9 +300,11 @@ void StartupBrowserCreatorImpl::Launch(
   if (g_pWebRTImpl == nullptr) {
     HMODULE hModule = ::GetModuleHandle(L"universe.dll");
     if (hModule) {
-      typedef CommonUniverse::CWebRTImpl*(__stdcall * GetWebRTImpl)(IWebRT**);
+      typedef CommonUniverse::CWebRTImpl*(__stdcall *
+                                            GetWebRTImpl)(IWebRT**);
       GetWebRTImpl _pCosmosFunction;
-      _pCosmosFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+      _pCosmosFunction =
+          (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
       if (_pCosmosFunction != NULL) {
         IWebRT* pCosmos = nullptr;
         g_pWebRTImpl = _pCosmosFunction(&pCosmos);
@@ -353,8 +349,6 @@ void StartupBrowserCreatorImpl::Launch(
     install_chrome_app::InstallChromeApp(
         command_line_.GetSwitchValueASCII(switches::kInstallChromeApp));
   }
-
-  web_app::MaybeInstallAppFromCommandLine(command_line_, *profile);
 
 #if BUILDFLAG(IS_MAC)
   if (process_startup == chrome::startup::IsProcessStartup::kYes) {
@@ -432,15 +426,15 @@ Browser* StartupBrowserCreatorImpl::OpenTabsInBrowser(
   bool first_tab = true;
   custom_handlers::ProtocolHandlerRegistry* registry =
       profile_ ? ProtocolHandlerRegistryFactory::GetForBrowserContext(profile_)
-               : nullptr;
-  for (auto& tab : tabs) {
+               : NULL;
+  for (size_t i = 0; i < tabs.size(); ++i) {
     // We skip URLs that we'd have to launch an external protocol handler for.
     // This avoids us getting into an infinite loop asking ourselves to open
     // a URL, should the handler be (incorrectly) configured to be us. Anyone
     // asking us to open such a URL should really ask the handler directly.
     bool handled_by_chrome =
-        ProfileIOData::IsHandledURL(tab.url) ||
-        (registry && registry->IsHandledProtocol(tab.url.scheme()));
+        ProfileIOData::IsHandledURL(tabs[i].url) ||
+        (registry && registry->IsHandledProtocol(tabs[i].url.scheme()));
     if (process_startup == chrome::startup::IsProcessStartup::kNo &&
         !handled_by_chrome) {
       continue;
@@ -450,24 +444,25 @@ Browser* StartupBrowserCreatorImpl::OpenTabsInBrowser(
     // will open as the foreground tab only if the remote content can be
     // retrieved successfully. This prevents needing to automatically close the
     // tab after opening it in the case where What's New does not load.
-    if (tab.url == whats_new::GetWebUIStartupURL()) {
+    if (tabs[i].url == whats_new::GetWebUIStartupURL()) {
       whats_new::StartWhatsNewFetch(browser);
       continue;
     }
 
     int add_types = first_tab ? AddTabTypes::ADD_ACTIVE : AddTabTypes::ADD_NONE;
     add_types |= AddTabTypes::ADD_FORCE_INDEX;
-    if (tab.type == StartupTab::Type::kPinned)
+    if (tabs[i].type == StartupTab::Type::kPinned)
       add_types |= AddTabTypes::ADD_PINNED;
 
-    NavigateParams params(browser, tab.url, ui::PAGE_TRANSITION_AUTO_TOPLEVEL);
+    NavigateParams params(browser, tabs[i].url,
+                          ui::PAGE_TRANSITION_AUTO_TOPLEVEL);
     params.disposition = first_tab ? WindowOpenDisposition::NEW_FOREGROUND_TAB
                                    : WindowOpenDisposition::NEW_BACKGROUND_TAB;
     params.tabstrip_add_types = add_types;
 
 #if BUILDFLAG(ENABLE_RLZ)
     if (process_startup == chrome::startup::IsProcessStartup::kYes &&
-        google_util::IsGoogleHomePageUrl(tab.url)) {
+        google_util::IsGoogleHomePageUrl(tabs[i].url)) {
       params.extra_headers = rlz::RLZTracker::GetAccessPointHttpHeader(
           rlz::RLZTracker::ChromeHomePage());
     }
@@ -477,12 +472,11 @@ Browser* StartupBrowserCreatorImpl::OpenTabsInBrowser(
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
     if (from_arc) {
-      auto* contents = params.navigated_or_inserted_contents;
-      if (contents) {
+      auto* tab = params.navigated_or_inserted_contents;
+      if (tab) {
         // Add a flag to remember this tab originated in the ARC context.
-        contents->SetUserData(
-            &arc::ArcWebContentsData::kArcTransitionFlag,
-            std::make_unique<arc::ArcWebContentsData>(contents));
+        tab->SetUserData(&arc::ArcWebContentsData::kArcTransitionFlag,
+                         std::make_unique<arc::ArcWebContentsData>(tab));
       }
     }
 #endif
