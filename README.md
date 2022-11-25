@@ -99,7 +99,7 @@ Here, "<ins>108.0.5359.x</ins>" is the Tag value contained in <i>[ChromiumVer.tx
 
 <h2 align=center>
 
-WebRuntime based on<br/> a <i>Specific Chromium Project<ins> Version: 108.0.5359.x</ins></i>(x>=62)
+WebRuntime based on<br/> a <i>Specific Chromium Project<ins> Version: 108.0.5359.x</ins></i>(x>=67)
 </h2>
 <h3>
 <p>Execute the following command:
