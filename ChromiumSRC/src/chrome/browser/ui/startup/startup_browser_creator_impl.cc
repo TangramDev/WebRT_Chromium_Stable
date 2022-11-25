@@ -170,9 +170,11 @@ ChromeBrowserFactory::ChromeBrowserFactory() {
   if (g_pWebRTImpl == nullptr) {
     HMODULE hModule = ::GetModuleHandle(L"universe.dll");
     if (hModule) {
-      typedef CommonUniverse::CWebRTImpl*(__stdcall * GetWebRTImpl)(IWebRT**);
+      typedef CommonUniverse::CWebRTImpl*(__stdcall *
+                                            GetWebRTImpl)(IWebRT**);
       GetWebRTImpl _pCosmosFunction;
-      _pCosmosFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+      _pCosmosFunction =
+          (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
       if (_pCosmosFunction != NULL) {
         IWebRT* pCosmos = nullptr;
         g_pWebRTImpl = _pCosmosFunction(&pCosmos);
@@ -306,9 +308,11 @@ void StartupBrowserCreatorImpl::Launch(
   if (g_pWebRTImpl == nullptr) {
     HMODULE hModule = ::GetModuleHandle(L"universe.dll");
     if (hModule) {
-      typedef CommonUniverse::CWebRTImpl*(__stdcall * GetWebRTImpl)(IWebRT**);
+      typedef CommonUniverse::CWebRTImpl*(__stdcall *
+                                            GetWebRTImpl)(IWebRT**);
       GetWebRTImpl _pCosmosFunction;
-      _pCosmosFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+      _pCosmosFunction =
+          (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
       if (_pCosmosFunction != NULL) {
         IWebRT* pCosmos = nullptr;
         g_pWebRTImpl = _pCosmosFunction(&pCosmos);
@@ -562,18 +566,10 @@ StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
 
   auto* privacy_sandbox_serivce =
       PrivacySandboxServiceFactory::GetForProfile(profile_);
-  const bool will_use_new_notice_ui =
-      privacy_sandbox::kPrivacySandboxSettings3NewNotice.Get() &&
-      (privacy_sandbox_serivce &&
-       privacy_sandbox_serivce->GetRequiredPromptType() ==
-           PrivacySandboxService::PromptType::kNotice);
-  // Don't add any tabs for the new notice UI. It is a bubble instead of the
-  // modal dialog and it will stay up even while the user is navigating.
   const bool privacy_sandbox_dialog_required =
       privacy_sandbox_serivce &&
-      privacy_sandbox_serivce->GetRequiredPromptType() !=
-          PrivacySandboxService::PromptType::kNone &&
-      !will_use_new_notice_ui;
+      privacy_sandbox_serivce->GetRequiredPromptType() ==
+          PrivacySandboxService::PromptType::kConsent;
 
   auto result = DetermineStartupTabs(
       StartupTabProviderImpl(), process_startup, is_incognito_or_guest,
