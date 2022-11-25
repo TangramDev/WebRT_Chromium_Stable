@@ -1,5 +1,5 @@
 <h1 align=center>
-Working with <i>Latest Chromium Source Code</i><br><i><ins>Version: 107.0.5034.x</ins></i>(x>=62)
+Working with <i>Latest Chromium Source Code</i><br><i><ins>Version: 108.0.5359.x</ins></i>(x>=67)
 </h1>
 <h2  align=left><p>
 
@@ -28,7 +28,7 @@ Unzip the Patch zip you downloaded.</p>
 
 About <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>
 </h2>
-<h3><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 107.0.5304.34.</p>
+<h3><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 108.0.5359.67.</p>
 </h3>
 
 
@@ -84,11 +84,11 @@ as shown in the following figure:</p>
 <div align=center id="cmd"><img src="https://user-images.githubusercontent.com/26355688/199431665-1aa299b4-d1ec-4c6d-83ad-865541a214d6.jpg" width="75%"/></div> </p>
 <p>execute the following command:
 
-	$ ..\getbranch a Base
+	$ ..\getbranch x Base
 </p>
 <p>
 	
-Here, "<ins>107.0.5304.a</ins>" is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and "Base" is the branch name of "WebRT Base Branch"</p>
+Here, "<ins>108.0.5359.x</ins>" is the Tag value contained in <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>, and "Base" is the branch name of "WebRT Base Branch"</p>
 
 <p>Copy the folder "ChromiumSRC\src" (this folder is included in the unzipped folder of Chromium WebRT Patch) to "d:\WebRT\M108\src", execute the following command:
 	
@@ -99,7 +99,7 @@ Here, "<ins>107.0.5304.a</ins>" is the Tag value contained in <i>[ChromiumVer.tx
 
 <h2 align=center>
 
-WebRuntime based on<br/> a <i>Specific Chromium Project<ins> Version: 107.0.5304.x</ins></i>(x>=62)
+WebRuntime based on<br/> a <i>Specific Chromium Project<ins> Version: 108.0.5359.x</ins></i>(x>=62)
 </h2>
 <h3>
 <p>Execute the following command:
