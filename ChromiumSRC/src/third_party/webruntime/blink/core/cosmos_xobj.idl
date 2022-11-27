@@ -46,15 +46,15 @@
   [Affects = Nothing] HTMLCollection getElementsByTagName(DOMString localName);
 
   void sendMessage(
-      [DefaultValue = Undefined] optional CosmosXobj msg,
-      [DefaultValue = Undefined] optional ApplicationCallback callback);
+       optional CosmosXobj msg,
+       optional ApplicationCallback callback);
   void addEventListener(DOMString eventName, ApplicationCallback callback);
   void addEventListener(DOMString subObjName, DOMString eventName,
                         ApplicationCallback callback);
   void removeEventListener(DOMString eventName);
   void BindCtrlValue(
       DOMString strcontrols,
-      [DefaultValue = Undefined] optional ApplicationCallback callback);
+       optional ApplicationCallback callback);
 
   attribute EventHandler onCloudMessageForObject;
   attribute EventHandler onCloudMessageForXobj;
