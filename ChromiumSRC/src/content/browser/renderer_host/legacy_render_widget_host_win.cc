@@ -1,4 +1,4 @@
-// Copyright 2014 The Chromium Authors
+// Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -592,10 +592,10 @@ LegacyRenderWidgetHostHWND::GetOrCreateBrowserAccessibilityRoot() {
   BrowserAccessibilityManagerWin* manager =
       static_cast<BrowserAccessibilityManagerWin*>(
           rwhi->GetOrCreateRootBrowserAccessibilityManager());
-  if (!manager || !manager->GetBrowserAccessibilityRoot())
+  if (!manager || !manager->GetRoot())
     return nullptr;
 
-  BrowserAccessibility* root_node = manager->GetBrowserAccessibilityRoot();
+  BrowserAccessibility* root_node = manager->GetRoot();
 
   // Popups with HTML content (such as <input type="date">) will create a new
   // HWND with its own fragment root, but will also inject accessible nodes into

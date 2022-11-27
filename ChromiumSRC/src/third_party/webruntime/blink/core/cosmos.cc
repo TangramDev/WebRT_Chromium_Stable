@@ -816,6 +816,7 @@ void Cosmos::DispatchXobjEvent(CosmosXobj* xObj,
   if (ctrlName.IsNull() || ctrlName == "") {
     ctrlName_ = xObj->getStr("name@page");
   }
+  xObj->setMsgID(ctrlName_ + "_" + eventName);
   String strXml = xObj->getStr(eventName + "Xml");
   if (strXml.IsNull() || strXml == "") {
     String strEvent = eventName + "@" + ctrlName;
@@ -823,6 +824,17 @@ void Cosmos::DispatchXobjEvent(CosmosXobj* xObj,
     auto it = xObj->m_mapElement.find(strIndex);
     if (it != xObj->m_mapElement.end()) {
       list2 = it->second->Children();
+      if (list2 == nullptr && xObj->form() && xObj->form()->eventElem_) {
+        HTMLCollection* list = xObj->form()->eventElem_->Children();
+        if (list->length()) {
+          list2 = list;
+        }
+      }
+      HTMLCollection* list =
+          xObj->eventElem_->getElementsByTagName(AtomicString(ctrlName));
+      if (list->length()) {
+        list2 = list;
+      }
     }
   } else {
     HTMLCollection* list = xObj->DocumentFragment_->getElementsByTagName(
@@ -896,10 +908,15 @@ void Cosmos::DispatchXobjEvent(CosmosXobj* xObj,
       }
     }
   }
-  if (xObj->form() && !bFormMsgProcessed)
+  if (xObj->form() && !bFormMsgProcessed) {
+    HTMLCollection* eventObjlist =
+        xObj->form()->eventElem_->getElementsByTagName(AtomicString(ctrlName_));
+    if (eventObjlist->length()) {
+      xObj->setWorkElement(eventObjlist->item(0));
+    }
     xObj->DispatchEvent(*blink::CosmosEvent::Create(
         blink::webrt_event_type_names::kCloudmessageforcloudform, xObj));
-  else if (xObj->grid() && !bXobjMsgProcessed)
+  } else if (xObj->grid() && !bXobjMsgProcessed)
     xObj->DispatchEvent(*blink::CosmosEvent::Create(
         blink::webrt_event_type_names::kCloudmessageforxobj, xObj));
 }
