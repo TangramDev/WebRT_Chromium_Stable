@@ -2602,6 +2602,27 @@ void RenderFrameImpl::CommitNavigation(
   DCHECK(navigation_client_impl_);
   DCHECK(!blink::IsRendererDebugURL(common_params->url));
   DCHECK(!NavigationTypeUtils::IsSameDocument(common_params->navigation_type));
+
+  // begin Add by TangramTeam
+  switch (common_params->navigation_type) {
+    case blink::mojom::NavigationType::RELOAD:
+    case blink::mojom::NavigationType::RELOAD_ORIGINAL_REQUEST_URL: {
+      blink::Cosmos* pCosmos = (blink::Cosmos*)GetWebFrame()->GetWebRT();
+      if (pCosmos) {
+        if (pCosmos->m_mapWebRTGalaxy.size()) {
+          if (frame_ && !frame_->IsLoading())
+            GetFrameHost()->DidStopLoading();
+          return;
+        }
+        // pCosmos->sendMessage("RELOADWEBPAGE", "", "", "", "", "");
+        // pCosmos->Close();
+      }
+    } break;
+    default:
+      break;
+  }
+  // end Add by TangramTeam
+
   LogCommitHistograms(commit_params->commit_sent, is_main_frame_);
 
   AssertNavigationCommits assert_navigation_commits(
