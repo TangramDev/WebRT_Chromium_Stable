@@ -50,8 +50,8 @@
 // end Add by TangramTeam
 
 using views::View;
-using web_modal::ModalDialogHostObserver;
 using web_modal::WebContentsModalDialogHost;
+using web_modal::ModalDialogHostObserver;
 
 namespace {
 
@@ -85,7 +85,8 @@ class BrowserViewLayout::WebContentsModalDialogHostViews
  public:
   explicit WebContentsModalDialogHostViews(
       BrowserViewLayout* browser_view_layout)
-      : browser_view_layout_(browser_view_layout) {}
+          : browser_view_layout_(browser_view_layout) {
+  }
 
   WebContentsModalDialogHostViews(const WebContentsModalDialogHostViews&) =
       delete;
@@ -183,7 +184,8 @@ BrowserViewLayout::BrowserViewLayout(
 
 BrowserViewLayout::~BrowserViewLayout() = default;
 
-WebContentsModalDialogHost* BrowserViewLayout::GetWebContentsModalDialogHost() {
+WebContentsModalDialogHost*
+    BrowserViewLayout::GetWebContentsModalDialogHost() {
   return dialog_host_.get();
 }
 
@@ -259,8 +261,8 @@ int BrowserViewLayout::NonClientHitTest(const gfx::Point& point) {
   views::View* parent = browser_view_->parent();
 
   gfx::Point point_in_browser_view_coords(point);
-  views::View::ConvertPointToTarget(parent, browser_view_,
-                                    &point_in_browser_view_coords);
+  views::View::ConvertPointToTarget(
+      parent, browser_view_, &point_in_browser_view_coords);
 
   // Let the frame handle any events that fall within the bounds of the window
   // controls overlay.
@@ -700,8 +702,9 @@ void BrowserViewLayout::LayoutContentsContainerView(int top, int bottom) {
                                        rc.bottom - rc.top);
 
   contents_container_->SetBoundsRect(contents_container_bounds2);
-}
-//  end Add by TangramTeam
+}  
+
+// end Add by TangramTeam
 
 void BrowserViewLayout::LayoutSidePanelView(
     views::View* side_panel,

@@ -15,22 +15,22 @@
   CosmosNode getXobj(DOMString strName);
   void Observe(
       DOMString strKey, DOMString xml,
-      [DefaultValue = Undefined] optional ApplicationCallback callback);
+       optional ApplicationCallback callback);
   void Observe(
       DOMString strCtrlName, DOMString strKey, DOMString xml,
-      [DefaultValue = Undefined] optional ApplicationCallback callback);
+       optional ApplicationCallback callback);
   void Observe(
       long row, long col, DOMString strKey, DOMString xml,
-      [DefaultValue = Undefined] optional ApplicationCallback callback);
+       optional ApplicationCallback callback);
   void ObserveEx(
       DOMString strKey, Element elem,
-      [DefaultValue = Undefined] optional ApplicationCallback callback);
+       optional ApplicationCallback callback);
   void ObserveEx(
       DOMString strCtrlName, DOMString strKey, Element elem,
-      [DefaultValue = Undefined] optional ApplicationCallback callback);
+       optional ApplicationCallback callback);
   void ObserveEx(
       long row, long col, DOMString strKey, Element elem,
-      [DefaultValue = Undefined] optional ApplicationCallback callback);
+       optional ApplicationCallback callback);
 
   void DispatchXobjEvent(Element elem, DOMString eventName);
 

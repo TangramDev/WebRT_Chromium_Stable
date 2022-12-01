@@ -38,7 +38,6 @@
 #include "third_party/blink/public/common/action_after_pagehide.h"
 #include "third_party/blink/public/common/browser_interface_broker_proxy.h"
 #include "third_party/blink/public/common/features.h"
-#include "third_party/blink/public/common/frame/event_page_show_persisted.h"
 #include "third_party/blink/public/mojom/devtools/inspector_issue.mojom-blink.h"
 #include "third_party/blink/public/mojom/frame/frame.mojom-blink.h"
 #include "third_party/blink/public/mojom/permissions_policy/policy_disposition.mojom-blink.h"
@@ -132,13 +131,14 @@
 #include "third_party/blink/renderer/core/trustedtypes/trusted_types_util.h"
 #include "third_party/blink/renderer/platform/back_forward_cache_buffer_limit_tracker.h"
 #include "third_party/blink/renderer/platform/bindings/exception_messages.h"
-#include "third_party/blink/renderer/platform/bindings/microtask.h"
 #include "third_party/blink/renderer/platform/bindings/script_state.h"
 #include "third_party/blink/renderer/platform/bindings/source_location.h"
 #include "third_party/blink/renderer/platform/heap/garbage_collected.h"
 #include "third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h"
 #include "third_party/blink/renderer/platform/network/network_state_notifier.h"
+#include "third_party/blink/renderer/platform/runtime_enabled_features.h"
 #include "third_party/blink/renderer/platform/scheduler/public/dummy_schedulers.h"
+#include "third_party/blink/renderer/platform/scheduler/public/event_loop.h"
 #include "third_party/blink/renderer/platform/scheduler/public/post_cross_thread_task.h"
 #include "third_party/blink/renderer/platform/scheduler/public/thread_scheduler.h"
 #include "third_party/blink/renderer/platform/storage/blink_storage_key.h"
@@ -162,6 +162,14 @@
 // end Add by TangramTeam
 
 namespace blink {
+
+namespace {
+bool IsRunningMicrotasks(ScriptState* script_state) {
+  if (auto* microtask_queue = ToMicrotaskQueue(script_state))
+    return microtask_queue->IsRunningMicrotasks();
+  return v8::MicrotasksScope::IsRunningMicrotasks(script_state->GetIsolate());
+}
+}  // namespace
 
 class LocalDOMWindow::NetworkStateObserver final
     : public GarbageCollected<LocalDOMWindow::NetworkStateObserver>,
@@ -429,6 +437,39 @@ bool LocalDOMWindow::CanExecuteScripts(
   if (!script_enabled && reason == kAboutToExecuteScript && settings_client)
     settings_client->DidNotAllowScript();
   return script_enabled;
+}
+
+String LocalDOMWindow::CheckAndGetJavascriptUrl(
+    const DOMWrapperWorld* world,
+    const KURL& url,
+    Element* element,
+    network::mojom::CSPDisposition csp_disposition) {
+  const int kJavascriptSchemeLength = sizeof("javascript:") - 1;
+  String decoded_url = DecodeURLEscapeSequences(
+      url.GetString(), DecodeURLMode::kUTF8OrIsomorphic);
+  String script_source = decoded_url.Substring(kJavascriptSchemeLength);
+
+  if (csp_disposition == network::mojom::CSPDisposition::DO_NOT_CHECK)
+    return script_source;
+
+  // Check the CSP of the caller (the "source browsing context") if required,
+  // as per https://html.spec.whatwg.org/C/#javascript-protocol.
+  if (!GetContentSecurityPolicyForWorld(world)->AllowInline(
+          ContentSecurityPolicy::InlineType::kNavigation, element, decoded_url,
+          String() /* nonce */, Url(), OrdinalNumber::First()))
+    return String();
+
+  // TODO(crbug.com/896041): Investigate how trusted type checks can be
+  // implemented for isolated worlds.
+  if (ContentSecurityPolicy::ShouldBypassMainWorldDeprecated(world))
+    return script_source;
+
+  // https://w3c.github.io/webappsec-trusted-types/dist/spec/#require-trusted-types-for-pre-navigation-check
+  // 4.9.1.1. require-trusted-types-for Pre-Navigation check
+  script_source =
+      TrustedTypesCheckForJavascriptURLinNavigation(script_source, this);
+
+  return script_source;
 }
 
 void LocalDOMWindow::ExceptionThrown(ErrorEvent* event) {
@@ -787,8 +828,8 @@ void LocalDOMWindow::DispatchWindowLoadEvent() {
   // 'load' event asynchronously.  crbug.com/569511.
   if (ScopedEventQueue::Instance()->ShouldQueueEvents() && document_) {
     document_->GetTaskRunner(TaskType::kNetworking)
-        ->PostTask(FROM_HERE, WTF::Bind(&LocalDOMWindow::DispatchLoadEvent,
-                                        WrapPersistent(this)));
+        ->PostTask(FROM_HERE, WTF::BindOnce(&LocalDOMWindow::DispatchLoadEvent,
+                                            WrapPersistent(this)));
     return;
   }
   DispatchLoadEvent();
@@ -826,15 +867,6 @@ void LocalDOMWindow::EnqueueNonPersistedPageshowEvent() {
                                                false /* persisted */),
                   document_.Get());
   }
-
-  // This UMA is recorded regardless of whether the event will be actually
-  // dispatched or not. It should only be possible for an enqueued page-show
-  // event to skip dispatch when the renderer exits. If this is not the case or
-  // there are other cases, we need to fix this code to only record the metric
-  // once the event is dispatched.
-  if (GetFrame() && GetFrame()->IsOutermostMainFrame()) {
-    RecordUMAEventPageShowPersisted(EventPageShowPersisted::kNoInRenderer);
-  }
 }
 
 void LocalDOMWindow::DispatchPersistedPageshowEvent(
@@ -844,10 +876,6 @@ void LocalDOMWindow::DispatchPersistedPageshowEvent(
   // |navigation_start| time of the back navigation.
   DispatchEvent(*PageTransitionEvent::CreatePersistedPageshow(navigation_start),
                 document_.Get());
-
-  if (GetFrame() && GetFrame()->IsOutermostMainFrame()) {
-    RecordUMAEventPageShowPersisted(EventPageShowPersisted::kYesInRenderer);
-  }
 }
 
 void LocalDOMWindow::DispatchPagehideEvent(
@@ -1091,10 +1119,13 @@ Navigator* LocalDOMWindow::navigator() {
 void LocalDOMWindow::SchedulePostMessage(PostedMessage* posted_message) {
   LocalDOMWindow* source = posted_message->source;
 
-  // Record UKM metrics for postMessage event.
-  post_message_counter_.RecordMessage(source->UkmSourceID(),
-                                      source->GetStorageKey(), UkmSourceID(),
-                                      GetStorageKey(), UkmRecorder());
+  // Record UKM metrics for the postMessage event and don't send message if
+  // gating indicates it should be dropped.
+  if (!post_message_counter_.RecordMessageAndCheckIfShouldSend(
+          source->UkmSourceID(), source->GetStorageKey(), UkmSourceID(),
+          GetStorageKey(), UkmRecorder())) {
+    return;
+  };
 
   // Notify the host if the message contained a delegated capability. That state
   // should be tracked by the browser, and messages from remote hosts already
@@ -1120,10 +1151,10 @@ void LocalDOMWindow::SchedulePostMessage(PostedMessage* posted_message) {
   GetTaskRunner(TaskType::kPostedMessage)
       ->PostTask(
           FROM_HERE,
-          WTF::Bind(&LocalDOMWindow::DispatchPostMessage, WrapPersistent(this),
-                    WrapPersistent(event),
-                    std::move(posted_message->target_origin),
-                    std::move(location), source->GetAgent()->cluster_id()));
+          WTF::BindOnce(&LocalDOMWindow::DispatchPostMessage,
+                        WrapPersistent(this), WrapPersistent(event),
+                        std::move(posted_message->target_origin),
+                        std::move(location), source->GetAgent()->cluster_id()));
   event->async_task_context()->Schedule(this, "postMessage");
 }
 
@@ -1261,8 +1292,7 @@ void LocalDOMWindow::print(ScriptState* script_state) {
   if (!GetFrame())
     return;
 
-  if (script_state &&
-      v8::MicrotasksScope::IsRunningMicrotasks(script_state->GetIsolate())) {
+  if (script_state && IsRunningMicrotasks(script_state)) {
     UseCounter::Count(this, WebFeature::kDuring_Microtask_Print);
   }
 
@@ -1301,7 +1331,7 @@ void LocalDOMWindow::alert(ScriptState* script_state, const String& message) {
     return;
   }
 
-  if (v8::MicrotasksScope::IsRunningMicrotasks(script_state->GetIsolate())) {
+  if (IsRunningMicrotasks(script_state)) {
     UseCounter::Count(this, WebFeature::kDuring_Microtask_Alert);
   }
 
@@ -1335,7 +1365,7 @@ bool LocalDOMWindow::confirm(ScriptState* script_state, const String& message) {
     return false;
   }
 
-  if (v8::MicrotasksScope::IsRunningMicrotasks(script_state->GetIsolate())) {
+  if (IsRunningMicrotasks(script_state)) {
     UseCounter::Count(this, WebFeature::kDuring_Microtask_Confirm);
   }
 
@@ -1371,7 +1401,7 @@ String LocalDOMWindow::prompt(ScriptState* script_state,
     return String();
   }
 
-  if (v8::MicrotasksScope::IsRunningMicrotasks(script_state->GetIsolate())) {
+  if (IsRunningMicrotasks(script_state)) {
     UseCounter::Count(this, WebFeature::kDuring_Microtask_Prompt);
   }
 
@@ -1610,6 +1640,7 @@ void LocalDOMWindow::setStatus(const String& string) {
 }
 
 void LocalDOMWindow::setDefaultStatus(const String& string) {
+  DCHECK(RuntimeEnabledFeatures::WindowDefaultStatusEnabled());
   default_status_ = string;
 }
 
@@ -1882,9 +1913,9 @@ void LocalDOMWindow::queueMicrotask(V8VoidFunction* callback) {
   if (tracker && script_state->World().IsMainWorld()) {
     callback->SetParentTaskId(tracker->RunningTaskAttributionId(script_state));
   }
-  Microtask::EnqueueMicrotask(
-      WTF::Bind(&V8VoidFunction::InvokeAndReportException,
-                WrapPersistent(callback), nullptr));
+  GetAgent()->event_loop()->EnqueueMicrotask(
+      WTF::BindOnce(&V8VoidFunction::InvokeAndReportException,
+                    WrapPersistent(callback), nullptr));
 }
 
 bool LocalDOMWindow::originAgentCluster() const {
@@ -1917,11 +1948,6 @@ CustomElementRegistry* LocalDOMWindow::customElements() const {
 
 CustomElementRegistry* LocalDOMWindow::MaybeCustomElements() const {
   return custom_elements_;
-}
-
-void LocalDOMWindow::SetModulator(Modulator* modulator) {
-  DCHECK(!modulator_);
-  modulator_ = modulator;
 }
 
 External* LocalDOMWindow::external() {
@@ -2158,10 +2184,10 @@ void LocalDOMWindow::FinishedLoading(FrameLoader::NavigationFinishState state) {
         for (Element* defineElement : *defineElements) {
           String tagName =
               defineElement->getAttribute(extraPrefixWithDash + "tagName");
-          if (tagName.IsNull() || tagName.IsEmpty()) {
+          if (tagName.IsNull() || tagName == "") {
             tagName = defineElement->getAttribute("tagName");
           }
-          if (!tagName.IsNull() && !tagName.IsEmpty()) {
+          if (!tagName.IsNull() && tagName != "") {
             if (tagName.StartsWith(extraPrefixWithDash,
                                    kTextCaseASCIIInsensitive)) {
               tagName = tagName.Substring(extraPrefixWithDash.length());
@@ -2190,7 +2216,7 @@ void LocalDOMWindow::PrintErrorMessage(const String& message) const {
   if (!IsCurrentlyDisplayedInFrame())
     return;
 
-  if (message.IsEmpty())
+  if (message.empty())
     return;
 
   GetFrameConsole()->AddMessage(MakeGarbageCollected<ConsoleMessage>(
@@ -2225,10 +2251,10 @@ DOMWindow* LocalDOMWindow::open(v8::Isolate* isolate,
     return nullptr;
 
   UseCounter::Count(*entered_window, WebFeature::kDOMWindowOpen);
-  if (!features.IsEmpty())
+  if (!features.empty())
     UseCounter::Count(*entered_window, WebFeature::kDOMWindowOpenFeatures);
 
-  KURL completed_url = url_string.IsEmpty()
+  KURL completed_url = url_string.empty()
                            ? KURL(g_empty_string)
                            : entered_window->CompleteURL(url_string);
   if (!completed_url.IsEmpty() && !completed_url.IsValid()) {
@@ -2276,7 +2302,7 @@ DOMWindow* LocalDOMWindow::open(v8::Isolate* isolate,
 
   FrameTree::FindResult result =
       GetFrame()->Tree().FindOrCreateFrameForNavigation(
-          frame_request, target.IsEmpty() ? "_blank" : target);
+          frame_request, target.empty() ? "_blank" : target);
   if (!result.frame)
     return nullptr;
 
@@ -2381,7 +2407,6 @@ void LocalDOMWindow::Trace(Visitor* visitor) const {
   visitor->Trace(navigator_);
   visitor->Trace(media_);
   visitor->Trace(custom_elements_);
-  visitor->Trace(modulator_);
   visitor->Trace(external_);
   visitor->Trace(visualViewport_);
   visitor->Trace(event_listener_observers_);
