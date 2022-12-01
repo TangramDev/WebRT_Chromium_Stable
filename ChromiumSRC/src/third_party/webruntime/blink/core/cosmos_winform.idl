@@ -8,10 +8,10 @@
   CosmosGalaxy getGalaxy(DOMString galaxyName);
   void Observe(
       DOMString strCtrlName, DOMString strKey, DOMString xml,
-       optional ApplicationCallback callback);
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
   void Observe(
       DOMString strCtrlName, DOMString strKey, Element elem,
-       optional ApplicationCallback callback);
+      [DefaultValue = Undefined] optional ApplicationCallback callback);
 
   void DispatchXobjEvent(Element elem, DOMString eventName);
 

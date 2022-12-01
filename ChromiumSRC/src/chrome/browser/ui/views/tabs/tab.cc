@@ -1,4 +1,4 @@
-// Copyright 2012 The Chromium Authors
+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -68,6 +68,7 @@
 #include "ui/compositor/compositor.h"
 #include "ui/gfx/animation/tween.h"
 #include "ui/gfx/canvas.h"
+#include "ui/gfx/color_analysis.h"
 #include "ui/gfx/color_palette.h"
 #include "ui/gfx/favicon_size.h"
 #include "ui/gfx/geometry/rect_conversions.h"
@@ -665,7 +666,7 @@ void Tab::GetAccessibleNodeData(ui::AXNodeData* node_data) {
 
   std::u16string name = controller_->GetAccessibleTabName(this);
   if (!name.empty()) {
-    node_data->SetNameChecked(name);
+    node_data->SetName(name);
   } else {
     // Under some conditions, |GetAccessibleTabName| returns an empty string.
     node_data->SetNameExplicitlyEmpty();

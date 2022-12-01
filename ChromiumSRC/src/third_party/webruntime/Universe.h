@@ -274,7 +274,7 @@ extern "C"{
 typedef /* [helpstring] */ 
 enum BrowserWndOpenDisposition
     {
-        UNKNOWN_TAB	= 0,
+        UNKNOWN	= 0,
         CURRENT_TAB	= 0x1,
         SINGLETON_TAB	= 0x2,
         NEW_FOREGROUND_TAB	= 0x3,

@@ -1,4 +1,4 @@
-// Copyright 2012 The Chromium Authors
+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -193,8 +193,6 @@ class Tab : public gfx::AnimationDelegate,
     return showing_close_button_;
   }
 
-  raw_ptr<TabCloseButton> close_button() { return close_button_; }
-
  private:
   class TabCloseButtonObserver;
   friend class AlertIndicatorButtonTest;
@@ -202,8 +200,8 @@ class Tab : public gfx::AnimationDelegate,
   friend class TabStripTestBase;
   FRIEND_TEST_ALL_PREFIXES(TabStripTest, TabCloseButtonVisibility);
   FRIEND_TEST_ALL_PREFIXES(TabTest, TitleTextHasSufficientContrast);
-  FRIEND_TEST_ALL_PREFIXES(TabHoverCardInteractiveUiTest,
-                           HoverCardVisibleOnTabCloseButtonFocusAfterTabFocus);
+  FRIEND_TEST_ALL_PREFIXES(TabHoverCardBubbleViewBrowserTest,
+                           WidgetVisibleOnTabCloseButtonFocusAfterTabFocus);
 
   // Invoked from Layout to adjust the position of the favicon or alert
   // indicator for pinned tabs. The visual_width parameter is how wide the
