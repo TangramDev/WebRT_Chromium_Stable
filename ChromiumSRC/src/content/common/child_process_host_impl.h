@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -32,7 +32,7 @@
 namespace IPC {
 class Channel;
 class MessageFilter;
-}
+}  // namespace IPC
 
 namespace content {
 class ChildProcessHostDelegate;
@@ -87,6 +87,11 @@ class CONTENT_EXPORT ChildProcessHostImpl
   void AddFilter(IPC::MessageFilter* filter) override;
   void BindReceiver(mojo::GenericPendingReceiver receiver) override;
 
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+  void ReinitializeLogging(uint32_t logging_dest,
+                           base::ScopedFD log_file_descriptor) override;
+#endif
+
 // TODO(crbug.com/1328879): Remove this method when fixing the bug.
 #if BUILDFLAG(IS_CASTOS) || BUILDFLAG(IS_CAST_ANDROID)
   void RunServiceDeprecated(
@@ -138,7 +143,7 @@ class CONTENT_EXPORT ChildProcessHostImpl
   // Holds all the IPC message filters.  Since this object lives on the IO
   // thread, we don't have a IPC::ChannelProxy and so we manage filters
   // manually.
-  std::vector<scoped_refptr<IPC::MessageFilter> > filters_;
+  std::vector<scoped_refptr<IPC::MessageFilter>> filters_;
 };
 
 }  // namespace content

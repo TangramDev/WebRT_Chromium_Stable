@@ -1,4 +1,4 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -339,7 +339,7 @@ void NativeWindowOcclusionTrackerWin::UpdateOcclusionState(
     }
 
     // begin Add by TangramTeam
-    // it->second->GetHost()->SetNativeWindowOcclusionState(occl_state,
+    //it->second->GetHost()->SetNativeWindowOcclusionState(occl_state,
     //                                                     occluded_region);
     // end Add by TangramTeam
     num_visible_root_windows_++;

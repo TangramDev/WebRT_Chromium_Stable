@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -199,6 +199,18 @@ void ChildProcessHostImpl::BindReceiver(mojo::GenericPendingReceiver receiver) {
   child_process_->BindReceiver(std::move(receiver));
 }
 
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+void ChildProcessHostImpl::ReinitializeLogging(
+    uint32_t logging_dest,
+    base::ScopedFD log_file_descriptor) {
+  auto logging_settings = mojom::LoggingSettings::New();
+  logging_settings->logging_dest = logging_dest;
+  logging_settings->log_file_descriptor =
+      mojo::PlatformHandle(std::move(log_file_descriptor));
+  child_process()->ReinitializeLogging(std::move(logging_settings));
+}
+#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+
 base::Process& ChildProcessHostImpl::GetPeerProcess() {
   if (!peer_process_.IsValid()) {
     const base::Process& process = delegate_->GetProcess();
@@ -365,7 +377,7 @@ bool ChildProcessHostImpl::OnMessageReceived(const IPC::Message& msg) {
   }
 
   if (!handled) {
-      handled = delegate_->OnMessageReceived(msg);
+    handled = delegate_->OnMessageReceived(msg);
   }
 
 #if BUILDFLAG(IPC_MESSAGE_LOG_ENABLED)
