@@ -909,16 +909,27 @@ void Cosmos::DispatchXobjEvent(CosmosXobj* xObj,
     }
   }
   if (xObj->form() && !bFormMsgProcessed) {
-    HTMLCollection* eventObjlist =
-        xObj->form()->eventElem_->getElementsByTagName(AtomicString(ctrlName_));
-    if (eventObjlist->length()) {
-      xObj->setWorkElement(eventObjlist->item(0));
+    if (xObj->form()->eventElem_) {
+      HTMLCollection* eventObjlist =
+          xObj->form()->eventElem_->getElementsByTagName(
+              AtomicString(ctrlName_));
+      if (eventObjlist->length()) {
+        xObj->setWorkElement(eventObjlist->item(0));
+      }
     }
     xObj->DispatchEvent(*blink::CosmosEvent::Create(
         blink::webrt_event_type_names::kCloudmessageforcloudform, xObj));
-  } else if (xObj->grid() && !bXobjMsgProcessed)
+  } else if (xObj->grid() && !bXobjMsgProcessed) {
+    if (xObj->eventElem_ != nullptr) {
+      HTMLCollection* eventObjlist =
+          xObj->eventElem_->getElementsByTagName(AtomicString(ctrlName_));
+      if (eventObjlist->length()) {
+        xObj->setWorkElement(eventObjlist->item(0));
+      }
+    }
     xObj->DispatchEvent(*blink::CosmosEvent::Create(
         blink::webrt_event_type_names::kCloudmessageforxobj, xObj));
+  }
 }
 
 void Cosmos::ProcessMessage(CosmosXobj* xobj) {

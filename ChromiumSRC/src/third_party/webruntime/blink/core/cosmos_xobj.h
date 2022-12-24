@@ -82,6 +82,8 @@ class CORE_EXPORT CosmosXobj : public EventTargetWithInlineData {
 
   DEFINE_ATTRIBUTE_EVENT_LISTENER_BYWEBRT(CloudMessageForObject,
                                           kCloudmessageforobject)
+  DEFINE_ATTRIBUTE_EVENT_LISTENER_BYWEBRT(CloudMessageForCloudForm,
+                                          kCloudmessageforcloudform)
   DEFINE_ATTRIBUTE_EVENT_LISTENER_BYWEBRT(CloudMessageForXobj,
                                           kCloudmessageforxobj)
   DEFINE_ATTRIBUTE_EVENT_LISTENER_BYWEBRT(MessageReceived, kWebrt)

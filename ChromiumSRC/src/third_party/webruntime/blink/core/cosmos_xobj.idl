@@ -57,6 +57,7 @@
        optional ApplicationCallback callback);
 
   attribute EventHandler onCloudMessageForObject;
+  attribute EventHandler onCloudMessageForCloudForm;
   attribute EventHandler onCloudMessageForXobj;
   attribute EventHandler onMessageReceived;
   attribute EventHandler onXobjCreated;
