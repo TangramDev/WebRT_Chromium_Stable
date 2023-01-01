@@ -1,6 +1,3 @@
-// Copyright (c) 2011 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 #include <windows.h>
 
@@ -17,6 +14,7 @@
 #include "base/command_line.h"
 #include "base/containers/cxx20_erase.h"
 #include "base/debug/alias.h"
+#include "base/debug/handle_hooks_win.h"
 #include "base/feature_list.h"
 #include "base/files/file_path.h"
 #include "base/files/file_util.h"
@@ -29,10 +27,12 @@
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/time/time.h"
+#include "base/win/current_module.h"
 #include "base/win/registry.h"
 #include "base/win/win_util.h"
 #include "base/win/windows_version.h"
 #include "build/build_config.h"
+#include "chrome/app/delay_load_failure_hook_win.h"
 #include "chrome/app/main_dll_loader_win.h"
 #include "chrome/app/packed_resources_integrity.h"
 #include "chrome/browser/policy/policy_path_parser.h"
@@ -63,14 +63,16 @@ namespace {
 // process) created before MainDllLoader changes the current working directory
 // to the browser's version directory.
 void SetCwdForBrowserProcess() {
-  if (!::IsBrowserProcess())
+  if (!::IsBrowserProcess()) {
     return;
+  }
 
   std::array<wchar_t, MAX_PATH + 1> buffer;
   buffer[0] = L'\0';
   DWORD length = ::GetModuleFileName(nullptr, &buffer[0], buffer.size());
-  if (!length || length >= buffer.size())
+  if (!length || length >= buffer.size()) {
     return;
+  }
 
   base::SetCurrentDirectory(
       base::FilePath(base::FilePath::StringPieceType(&buffer[0], length))
@@ -83,28 +85,33 @@ bool IsFastStartSwitch(const std::string& command_line_switch) {
 
 bool ContainsNonFastStartFlag(const base::CommandLine& command_line) {
   const base::CommandLine::SwitchMap& switches = command_line.GetSwitches();
-  if (switches.size() > 1)
+  if (switches.size() > 1) {
     return true;
+  }
   for (base::CommandLine::SwitchMap::const_iterator it = switches.begin();
        it != switches.end(); ++it) {
-    if (!IsFastStartSwitch(it->first))
+    if (!IsFastStartSwitch(it->first)) {
       return true;
+    }
   }
   return false;
 }
 
 bool AttemptFastNotify(const base::CommandLine& command_line) {
-  if (ContainsNonFastStartFlag(command_line))
+  if (ContainsNonFastStartFlag(command_line)) {
     return false;
+  }
 
   base::FilePath user_data_dir;
-  if (!chrome::GetDefaultUserDataDirectory(&user_data_dir))
+  if (!chrome::GetDefaultUserDataDirectory(&user_data_dir)) {
     return false;
+  }
   policy::path_parser::CheckUserDataDirPolicy(&user_data_dir);
 
   HWND chrome = chrome::FindRunningChromeWindow(user_data_dir);
-  if (!chrome)
+  if (!chrome) {
     return false;
+  }
   return chrome::AttemptToNotifyRunningChrome(chrome) == chrome::NOTIFY_SUCCESS;
 }
 
@@ -129,10 +136,12 @@ bool HasValidWindowsPrefetchArgument(const base::CommandLine& command_line) {
 // removed.
 bool RemoveAppCompatFlagsEntry() {
   base::FilePath current_exe;
-  if (!base::PathService::Get(base::FILE_EXE, &current_exe))
+  if (!base::PathService::Get(base::FILE_EXE, &current_exe)) {
     return false;
-  if (!current_exe.IsAbsolute())
+  }
+  if (!current_exe.IsAbsolute()) {
     return false;
+  }
   base::win::RegKey key;
   if (key.Open(HKEY_CURRENT_USER,
                L"Software\\Microsoft\\Windows "
@@ -262,6 +271,8 @@ __declspec(dllexport) int __stdcall InitApp(bool bSupportCrashReporting) {
   install_static::InitializeFromPrimaryModule();
   if (bSupportCrashReporting)
     SignalInitializeCrashReporting();
+  if (IsBrowserProcess())
+    chrome::DisableDelayLoadFailureHooksForMainExecutable();
 #if defined(ARCH_CPU_32_BITS)
   // Intentionally crash if converting to a fiber failed.
   CHECK_EQ(fiber_status, FiberStatus::kSuccess);
@@ -279,12 +290,20 @@ __declspec(dllexport) int __stdcall InitApp(bool bSupportCrashReporting) {
   const std::string process_type =
       command_line->GetSwitchValueASCII(switches::kProcessType);
 
-  // In non-component mode, chrome.exe contains a separate instance of
-  // base::FeatureList. Prevent accidental use of this here by forbidding use of
-  // the one that's linked with chrome.exe.
 #if !defined(COMPONENT_BUILD) && DCHECK_IS_ON()
-  base::FeatureList::ForbidUseForCurrentModule();
-#endif
+  // In non-component mode, chrome.exe contains its own base::FeatureList
+  // instance pointer, which remains nullptr. Attempts to access feature state
+  // from chrome.exe should fail, instead of silently returning a default state.
+  base::FeatureList::FailOnFeatureAccessWithoutFeatureList();
+
+  // Patch the main EXE on non-component builds when DCHECKs are enabled.
+  // This allows detection of third party code that might attempt to meddle with
+  // Chrome's handles. This must be done when single-threaded to avoid other
+  // threads attempting to make calls through the hooks while they are being
+  // emplaced.
+  // Note: The DLL is patched separately, in chrome/app/chrome_main.cc.
+  base::debug::HandleHooks::AddIATPatch(CURRENT_MODULE());
+#endif  // !defined(COMPONENT_BUILD) && !DCHECK_IS_ON()
 
   // Confirm that an explicit prefetch profile is used for all process types
   // except for the browser process. Any new process type will have to assign

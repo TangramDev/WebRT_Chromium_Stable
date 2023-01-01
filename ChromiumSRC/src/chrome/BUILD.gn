@@ -452,6 +452,8 @@ if (!is_android && !is_mac) {
           # "app/chrome_exe_main_win.cc",
           "//third_party/webruntime/chrome/chrome_tangram_core.cc",
           "//third_party/webruntime/chrome/chrome_tangram_core.def",
+          "app/delay_load_failure_hook_win.cc",
+          "app/delay_load_failure_hook_win.h",
           "app/main_dll_loader_win.cc",
           "app/main_dll_loader_win.h",
           "common/crash_keys.cc",
