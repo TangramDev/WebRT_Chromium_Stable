@@ -2155,7 +2155,7 @@ bool CMarkup::x_SetData( int iPos, MCD_PCSZ szData, int nFlags )
 		strInsert = EscapeText( szData, nFlags );
 
 	// Insert
-	NodePos node( MNF_WITHNOLINES|MNF_REPLACE );
+	NodePos node( MNF_WITHNOLINES|MNF_REPLACE_ );
 	node.strMeta = strInsert;
 	int iPosBefore = 0;
 	int nReplace = x_InsertNew( iPos, iPosBefore, node );
@@ -2254,7 +2254,7 @@ bool CMarkup::x_SetElemContent( MCD_PCSZ szContent )
 	m_aPos[iPos].nFlags = (m_aPos[iPos].nFlags & ~MNF_ILLDATA) | (m_aPos[iPosVirtual].nFlags & MNF_ILLDATA);
 
 	// Prepare insert and adjust offsets
-	NodePos node( MNF_WITHNOLINES|MNF_REPLACE );
+	NodePos node( MNF_WITHNOLINES|MNF_REPLACE_ );
 	node.strMeta = szContent;
 	int iPosBefore = 0;
 	int nReplace = x_InsertNew( iPos, iPosBefore, node );
@@ -2400,7 +2400,7 @@ int CMarkup::x_InsertNew( int iPosParent, int& iPosRel, CMarkup::NodePos& node )
 	}
 
 	// Go up to start of next node, unless its splitting an empty element
-	if ( ! (node.nFlags&(MNF_WITHNOLINES|MNF_REPLACE)) && ! bEmptyParentTag )
+	if ( ! (node.nFlags&(MNF_WITHNOLINES|MNF_REPLACE_)) && ! bEmptyParentTag )
 	{
 		MCD_PCSZ szDoc = MCD_2PCSZ(m_strDoc);
 		int nChar = node.nStart;

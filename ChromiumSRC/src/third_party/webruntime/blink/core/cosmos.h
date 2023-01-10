@@ -101,7 +101,7 @@ class CORE_EXPORT Cosmos final : public CosmosXobj,
   void Trace(blink::Visitor*) const override;
   void NTPMsg();
 
-   void openMainWndUrls(String strs);
+  void openMainWndUrls(String strs);
 
   // Called when an event listener has been successfully added.
   // void AddedEventListener(const AtomicString& event_type,

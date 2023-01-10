@@ -177,20 +177,20 @@ bool RemoveAppCompatFlagsEntry() {
   return false;
 }
 
-int RunFallbackCrashHandler(const base::CommandLine& cmd_line) {
-  // Retrieve the product & version details we need to report the crash
-  // correctly.
-  wchar_t exe_file[MAX_PATH] = {};
-  CHECK(::GetModuleFileName(nullptr, exe_file, std::size(exe_file)));
-
-  std::wstring product_name, version, channel_name, special_build;
-  install_static::GetExecutableVersionDetails(exe_file, &product_name, &version,
-                                              &special_build, &channel_name);
-
-  return crash_reporter::RunAsFallbackCrashHandler(
-      cmd_line, base::WideToUTF8(product_name), base::WideToUTF8(version),
-      base::WideToUTF8(channel_name));
-}
+//int RunFallbackCrashHandler(const base::CommandLine& cmd_line) {
+//  // Retrieve the product & version details we need to report the crash
+//  // correctly.
+//  wchar_t exe_file[MAX_PATH] = {};
+//  CHECK(::GetModuleFileName(nullptr, exe_file, std::size(exe_file)));
+//
+//  std::wstring product_name, version, channel_name, special_build;
+//  install_static::GetExecutableVersionDetails(exe_file, &product_name, &version,
+//                                              &special_build, &channel_name);
+//
+//  return crash_reporter::RunAsFallbackCrashHandler(
+//      cmd_line, base::WideToUTF8(product_name), base::WideToUTF8(version),
+//      base::WideToUTF8(channel_name));
+//}
 
 // In 32-bit builds, the main thread starts with the default (small) stack size.
 // The ARCH_CPU_32_BITS blocks here and below are in support of moving the main
@@ -227,56 +227,12 @@ void WINAPI FiberBinder(void* params) {
 }  // namespace
 
 __declspec(dllexport) int __stdcall InitApp(bool bSupportCrashReporting) {
-#if defined(ARCH_CPU_32_BITS)
-  enum class FiberStatus { kConvertFailed, kCreateFiberFailed, kSuccess };
-  FiberStatus fiber_status = FiberStatus::kSuccess;
-  // GetLastError result if fiber conversion failed.
-  DWORD fiber_error = ERROR_SUCCESS;
-  if (!::IsThreadAFiber()) {
-    // Make the main thread's stack size 4 MiB so that it has roughly the same
-    // effective size as the 64-bit build's 8 MiB stack.
-    constexpr size_t kStackSize = 4 * 1024 * 1024;  // 4 MiB
-    // Leak the fiber on exit.
-    LPVOID original_fiber =
-        ::ConvertThreadToFiberEx(nullptr, FIBER_FLAG_FLOAT_SWITCH);
-    if (original_fiber) {
-      FiberState fiber_state = {instance, original_fiber};
-      // Create a fiber with a bigger stack and switch to it. Leak the fiber on
-      // exit.
-      LPVOID big_stack_fiber = ::CreateFiberEx(
-          0, kStackSize, FIBER_FLAG_FLOAT_SWITCH, FiberBinder, &fiber_state);
-      if (big_stack_fiber) {
-        ::SwitchToFiber(big_stack_fiber);
-        // The fibers must be cleaned up to avoid obscure TLS-related shutdown
-        // crashes.
-        ::DeleteFiber(big_stack_fiber);
-        ::ConvertFiberToThread();
-        // Control returns here after Chrome has finished running on FiberMain.
-        return fiber_state.fiber_result;
-      }
-      fiber_status = FiberStatus::kCreateFiberFailed;
-    } else {
-      fiber_status = FiberStatus::kConvertFailed;
-    }
-    // If we reach here then creating and switching to a fiber has failed. This
-    // probably means we are low on memory and will soon crash. Try to report
-    // this error once crash reporting is initialized.
-    fiber_error = ::GetLastError();
-    base::debug::Alias(&fiber_error);
-  }
-  // If we are already a fiber then continue normal execution.
-#endif  // defined(ARCH_CPU_32_BITS)
-
   SetCwdForBrowserProcess();
   install_static::InitializeFromPrimaryModule();
   if (bSupportCrashReporting)
     SignalInitializeCrashReporting();
   if (IsBrowserProcess())
     chrome::DisableDelayLoadFailureHooksForMainExecutable();
-#if defined(ARCH_CPU_32_BITS)
-  // Intentionally crash if converting to a fiber failed.
-  CHECK_EQ(fiber_status, FiberStatus::kSuccess);
-#endif  // defined(ARCH_CPU_32_BITS)
 
   // Done here to ensure that OOMs that happen early in process initialization
   // are correctly signaled to the OS.
@@ -311,54 +267,6 @@ __declspec(dllexport) int __stdcall InitApp(bool bSupportCrashReporting) {
   // content_switches.cc for details.
   DCHECK(process_type.empty() ||
          HasValidWindowsPrefetchArgument(*command_line));
-
-  if (process_type == crash_reporter::switches::kCrashpadHandler) {
-    // Check if we should monitor the exit code of this process
-    std::unique_ptr<browser_watcher::ExitCodeWatcher> exit_code_watcher;
-
-    crash_reporter::SetupFallbackCrashHandling(*command_line);
-    // no-periodic-tasks is specified for self monitoring crashpad instances.
-    // This is to ensure we are a crashpad process monitoring the browser
-    // process and not another crashpad process.
-    if (!command_line->HasSwitch("no-periodic-tasks")) {
-      // Retrieve the client process from the command line
-      crashpad::InitialClientData initial_client_data;
-      if (initial_client_data.InitializeFromString(
-              command_line->GetSwitchValueASCII("initial-client-data"))) {
-        // Setup exit code watcher to monitor the parent process
-        HANDLE duplicate_handle = INVALID_HANDLE_VALUE;
-        if (DuplicateHandle(
-                ::GetCurrentProcess(), initial_client_data.client_process(),
-                ::GetCurrentProcess(), &duplicate_handle,
-                PROCESS_QUERY_INFORMATION, FALSE, DUPLICATE_SAME_ACCESS)) {
-          base::Process parent_process(duplicate_handle);
-          exit_code_watcher =
-              std::make_unique<browser_watcher::ExitCodeWatcher>();
-          if (exit_code_watcher->Initialize(std::move(parent_process))) {
-            exit_code_watcher->StartWatching();
-          }
-        }
-      }
-    }
-
-    // The handler process must always be passed the user data dir on the
-    // command line.
-    DCHECK(command_line->HasSwitch(switches::kUserDataDir));
-
-    base::FilePath user_data_dir =
-        command_line->GetSwitchValuePath(switches::kUserDataDir);
-    int crashpad_status = crash_reporter::RunAsCrashpadHandler(
-        *base::CommandLine::ForCurrentProcess(), user_data_dir,
-        switches::kProcessType, switches::kUserDataDir);
-    if (crashpad_status != 0 && exit_code_watcher) {
-      // Crashpad failed to initialize, explicitly stop the exit code watcher
-      // so the crashpad-handler process can exit with an error
-      exit_code_watcher->StopWatching();
-    }
-    return crashpad_status;
-  } else if (process_type == crash_reporter::switches::kFallbackCrashHandler) {
-    return RunFallbackCrashHandler(*command_line);
-  }
 
   // Signal Chrome Elf that Chrome has begun to start.
   SignalChromeElf();
