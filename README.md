@@ -28,7 +28,7 @@ Unzip the Patch zip you downloaded.</p>
 
 About <i>[ChromiumVer.txt](https://github.com/TangramDev/WebRT_Chromium_Stable/blob/main/ChromiumVer.txt)</i>
 </h2>
-<h3><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 109.0.5414.67.</p>
+<h3><p>Each Chromium WebRT Patch contains a file "ChromiumVer.txt" to specify the Tag of the Chromium Project version corresponding to the Patch, for example: 109.0.5414.74.</p>
 </h3>
 
 
@@ -99,7 +99,7 @@ Here, "<ins>109.0.5414.x</ins>" is the Tag value contained in <i>[ChromiumVer.tx
 
 <h2 align=center>
 
-WebRuntime based on<br/> a <i>Specific Chromium Project<ins> Version: 109.0.5414.x</ins></i>(x>=67)
+WebRuntime based on<br/> a <i>Specific Chromium Project<ins> Version: 109.0.5414.x</ins></i>(x>=74)
 </h2>
 <h3>
 <p>Execute the following command:
